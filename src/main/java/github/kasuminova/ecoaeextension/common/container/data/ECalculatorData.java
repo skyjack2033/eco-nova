@@ -1,20 +1,22 @@
 package github.kasuminova.ecoaeextension.common.container.data;
 
+import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.GridAccessException;
 import appeng.util.item.AEItemStack;
 import com.github.bsideup.jabel.Desugar;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator.prop.Levels;
 import github.kasuminova.ecoaeextension.common.ecalculator.ECPUCluster;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorController;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorMEChannel;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorThreadCore;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,11 @@ public record ECalculatorData(long totalStorage, long usedExtraStorage, int acce
         }
 
         try {
-            final ICraftingGrid crafting = channel.getProxy().getCrafting();
+            final IGrid grid = channel.getProxy().getGrid();
+            if (grid == null) {
+                return ecpuData;
+            }
+            final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
             final List<ECalculatorThreadCore> threadCores = controller.getThreadCores();
             for (ICraftingCPU cpu : crafting.getCpus()) {
                 if (!(cpu instanceof ECPUCluster ecpu)) {
@@ -86,10 +92,9 @@ public record ECalculatorData(long totalStorage, long usedExtraStorage, int acce
         });
         buf.writeByte(ecpuList.size());
         ecpuList.forEach(ecpu -> {
-            try {
-                ecpu.crafting.writeToPacket(buf);
-            } catch (IOException ignored) {
-            }
+            NBTTagCompound stackTag = new NBTTagCompound();
+            ecpu.crafting.writeToNBT(stackTag);
+            ByteBufUtils.writeTag(buf, stackTag);
             buf.writeLong(ecpu.usedMemory);
             buf.writeLong(ecpu.usedExtraMemory);
             buf.writeInt(ecpu.parallelismPreSecond);
@@ -118,7 +123,9 @@ public record ECalculatorData(long totalStorage, long usedExtraStorage, int acce
         List<ECPUData> ecpuList = new ArrayList<>();
         if (ecpuSize > 0) {
             for (byte i = 0; i < ecpuSize; i++) {
-                ecpuList.add(new ECPUData(AEItemStack.fromPacket(buf), buf.readLong(), buf.readLong(), buf.readInt(), buf.readInt()));
+                NBTTagCompound stackTag = ByteBufUtils.readTag(buf);
+                IAEItemStack crafting = AEItemStack.loadItemStackFromNBT(stackTag);
+                ecpuList.add(new ECPUData(crafting, buf.readLong(), buf.readLong(), buf.readInt(), buf.readInt()));
             }
         }
         int cpuUsagePerSecond = buf.readInt();

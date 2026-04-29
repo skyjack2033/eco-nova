@@ -1,24 +1,27 @@
 package github.kasuminova.ecoaeextension.common.item.estorage;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
+import appeng.api.storage.ICellInventoryHandler;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.items.AEBaseItem;
-import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.inventory.IAEAppEngInventory;
+import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import github.kasuminova.ecoaeextension.common.block.ecotech.estorage.prop.DriveStorageLevel;
 import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
 import github.kasuminova.ecoaeextension.common.estorage.EStorageCellHandler;
 import lombok.Getter;
 import net.minecraft.client.resources.I18n;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -38,14 +41,18 @@ public abstract class EStorageCell<T extends IAEStack<T>> extends AEBaseItem imp
         this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings("DataFlowIssue")
-    protected void addCheckedInformation(final ItemStack stack, final World world, final List<String> lines, final boolean advancedTooltips) {
-        super.addCheckedInformation(stack, world, lines, advancedTooltips);
-        AEApi.instance()
-                .client()
-                .addCellInformation(EStorageCellHandler.getHandler(stack).getCellInventory(stack, null, this.getChannel()), lines);
+    @Override
+    protected void addCheckedInformation(final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean advancedTooltips) {
+        super.addCheckedInformation(stack, player, lines, advancedTooltips);
+        EStorageCellHandler handler = EStorageCellHandler.getHandler(stack);
+        if (handler != null) {
+            ICellInventoryHandler cellHandler = handler.getCellInventory(stack, null, getChannel());
+            if (cellHandler != null && cellHandler.getCellInv() != null) {
+                IItemList<?> items = cellHandler.getCellInv().getAvailableItems(cellHandler.getCellInv().getChannel().createList());
+                lines.add(I18n.format("novaeng.estorage_cell.bytes", items.size()));
+            }
+        }
         lines.add(I18n.format("novaeng.estorage_cell.insert.tip"));
         lines.add(I18n.format("novaeng.estorage_cell.extract.tip"));
         if (level == DriveStorageLevel.B) {
@@ -55,6 +62,8 @@ public abstract class EStorageCell<T extends IAEStack<T>> extends AEBaseItem imp
             lines.add(I18n.format("novaeng.estorage_cell.l9.tip"));
         }
     }
+
+    public abstract StorageChannel getChannel();
 
     @Override
     public double getIdleDrain() {
@@ -67,8 +76,7 @@ public abstract class EStorageCell<T extends IAEStack<T>> extends AEBaseItem imp
         return totalBytes;
     }
 
-    @Override
-    public boolean isBlackListed(@Nonnull final ItemStack cellItem, @Nonnull final T requestedAddition) {
+    public boolean isBlackListed(@Nonnull final ItemStack cellItem, @Nonnull final IAEStack requestedAddition) {
         return false;
     }
 
@@ -88,13 +96,8 @@ public abstract class EStorageCell<T extends IAEStack<T>> extends AEBaseItem imp
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public IInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
-    }
-
-    @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
-        return new CellConfig(is);
     }
 
     @Override

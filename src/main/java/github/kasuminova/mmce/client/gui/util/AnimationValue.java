@@ -52,6 +52,10 @@ public class AnimationValue {
         return target;
     }
 
+    public float getTargetValue() {
+        return target;
+    }
+
     public void setTarget(float target) {
         this.target = target;
     }
@@ -62,6 +66,18 @@ public class AnimationValue {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public void setImmediate(double value) {
+        this.value = (float) value;
+    }
+
+    public void setImmediate(float value) {
+        this.value = value;
+    }
+
+    public static AnimationValue ofFinished(float arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
+        return new AnimationValue(arg1, arg1, (int) arg2);
     }
 
 }

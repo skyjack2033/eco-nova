@@ -20,6 +20,7 @@ public abstract class EPartController<P extends EPart<?>> extends TileCustomCont
 
     protected final EPartMap<P> parts = new EPartMap<>();
     protected boolean assembled = false;
+    protected int ticksExisted = 0;
 
     
     public void doControllerTick() {
@@ -139,8 +140,10 @@ public abstract class EPartController<P extends EPart<?>> extends TileCustomCont
         if (controllerRotation != null) {
             return;
         }
-        IBlockState state = getWorld().getBlockState(getPos());
-        if (getControllerBlock().isInstance(state.getBlock())) {
+        BlockPos p = getPos();
+        Block block = getWorld().getBlock(p.getX(), p.getY(), p.getZ());
+        if (getControllerBlock().isInstance(block)) {
+            IBlockState state = block.getStateFromMeta(getWorld().getBlockMetadata(p.getX(), p.getY(), p.getZ()));
             controllerRotation = state.getValue(FacingProp.HORIZONTALS);
         } else {
             ECOAEExtension.log.warn("Invalid EPartController block at {} !", getPos());
@@ -160,7 +163,6 @@ public abstract class EPartController<P extends EPart<?>> extends TileCustomCont
     public void invalidate() {
         tileEntityInvalid = true;
         loaded = false;
-        foundComponents.forEach((te, component) -> MachineComponentManager.INSTANCE.removeOwner(te, this));
         disassemble();
     }
 
@@ -183,15 +185,6 @@ public abstract class EPartController<P extends EPart<?>> extends TileCustomCont
     
     public void updateContainingBlockInfo() {
         super.updateContainingBlockInfo();
-        final World world = getWorld();
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() && world != null) {
-            final BlockPos pos = getPos();
-            final IBlockState state = world.getBlockState(pos);
-            final IBlockState actual = state.getActualState(world, pos);
-            if (state != actual) {
-                world.setBlockState(pos, actual, 3);
-            }
-        }
     }
 
 }

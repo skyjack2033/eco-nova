@@ -76,7 +76,7 @@ public class ECalculatorController extends EPartController<ECalculatorPart> {
     public ECalculatorController(final ResourceLocation machineRegistryName) {
         this();
         this.parentMachine = MachineRegistry.getRegistry().getMachine(machineRegistryName);
-        this.parentController = BlockECalculatorController.REGISTRY.get(new ResourceLocation(ECOAEExtension.MOD_ID, machineRegistryName.getPath()));
+        this.parentController = BlockECalculatorController.REGISTRY.get(new ResourceLocation(ECOAEExtension.MOD_ID, machineRegistryName.getResourcePath()));
     }
 
     public ECalculatorController() {
@@ -351,7 +351,7 @@ public class ECalculatorController extends EPartController<ECalculatorPart> {
             ResourceLocation rl = new ResourceLocation(compound.getString("parentMachine"));
             parentMachine = MachineRegistry.getRegistry().getMachine(rl);
             if (parentMachine != null) {
-                this.parentController = BlockECalculatorController.REGISTRY.get(new ResourceLocation(ECOAEExtension.MOD_ID, parentMachine.getRegistryName().getPath()));
+                this.parentController = BlockECalculatorController.REGISTRY.get(new ResourceLocation(ECOAEExtension.MOD_ID, parentMachine.getMachineName()));
             } else {
                 ModularMachinery.log.info("Couldn't find machine named " + rl + " for controller at " + getPos().toString());
             }

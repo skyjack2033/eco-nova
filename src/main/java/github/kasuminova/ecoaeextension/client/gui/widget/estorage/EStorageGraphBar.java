@@ -10,6 +10,7 @@ import github.kasuminova.ecoaeextension.ECOAEExtension;
 import github.kasuminova.ecoaeextension.client.gui.GuiEStorageController;
 import github.kasuminova.ecoaeextension.common.util.ColorUtils;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -38,7 +39,7 @@ public class EStorageGraphBar extends DynamicWidget {
 
     protected final GuiEStorageController controllerGUI;
 
-    protected AnimationValue percentage = AnimationValue.ofFinished(0, 500, .25, .1, .25, 1);
+    protected AnimationValue percentage = new AnimationValue(0f, 0f, 500);
     protected AnimationValue ref = null;
     protected boolean reverseColor = false;
 
@@ -64,12 +65,12 @@ public class EStorageGraphBar extends DynamicWidget {
     }
 
     @Override
-    public void preRender(final WidgetGui widgetGui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
+    public void render(final RenderPos renderPos, final WidgetGui widgetGui) {
         if (percentage.get() <= 0) {
             return;
         }
 
-        GuiScreen gui = widgetGui.getGui();
+        GuiScreen gui = widgetGui.gui;
         gui.mc.getTextureManager().bindTexture(TEX_RES);
 
         // 计算柱形图的高度
@@ -84,29 +85,29 @@ public class EStorageGraphBar extends DynamicWidget {
                 (float) percentage.get()
         );
 
-        GlStateManager.color(
+        GL11.glColor4f(
                 (float) barColor.getRed() / 255,
                 (float) barColor.getGreen() / 255,
                 (float) barColor.getBlue() / 255,
                 .75F
         );
 
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
         // 渲染顶部
         gui.drawTexturedModalRect(
-                renderPos.posX(), renderPos.posY() + ((BAR_HEIGHT - (barHeight + BOTTOM_AND_TOP_HEIGHT))),
+                renderPos.x, renderPos.y + ((BAR_HEIGHT - (barHeight + BOTTOM_AND_TOP_HEIGHT))),
                 TOP_TEX_X, TOP_TEX_Y,
                 BAR_WIDTH, BOTTOM_AND_TOP_HEIGHT
         );
 
         // 渲染中间部分
-        int yOffset = renderPos.posY() + (BAR_HEIGHT - (barHeight + BOTTOM_AND_TOP_HEIGHT / 2)) + 1;
-        int finalYOffset = renderPos.posY() + BAR_HEIGHT - BOTTOM_AND_TOP_HEIGHT + (BOTTOM_AND_TOP_HEIGHT / 2) + 1;
+        int yOffset = renderPos.y + (BAR_HEIGHT - (barHeight + BOTTOM_AND_TOP_HEIGHT / 2)) + 1;
+        int finalYOffset = renderPos.y + BAR_HEIGHT - BOTTOM_AND_TOP_HEIGHT + (BOTTOM_AND_TOP_HEIGHT / 2) + 1;
         for (int i = yOffset; i < finalYOffset; i++) {
             gui.drawTexturedModalRect(
-                    renderPos.posX(), i,
+                    renderPos.x, i,
                     MID_TEX_X, MID_TEX_Y,
                     BAR_WIDTH, MID_TEX_HEIGHT
             );
@@ -114,16 +115,12 @@ public class EStorageGraphBar extends DynamicWidget {
 
         // 渲染底部
         gui.drawTexturedModalRect(
-                renderPos.posX(), renderPos.posY() + BAR_HEIGHT - BOTTOM_AND_TOP_HEIGHT,
+                renderPos.x, renderPos.y + BAR_HEIGHT - BOTTOM_AND_TOP_HEIGHT,
                 BOTTOM_TEX_X, BOTTOM_TEX_Y,
                 BAR_WIDTH, BOTTOM_AND_TOP_HEIGHT
         );
 
-        GlStateManager.color(1F, 1F, 1F, 1F);
-    }
-
-    @Override
-    public void render(final WidgetGui widgetGui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
+        GL11.glColor4f(1F, 1F, 1F, 1F);
     }
 
 }

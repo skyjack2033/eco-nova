@@ -1,9 +1,10 @@
 package appeng.me.helpers;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.util.AEPartLocation;
+import appeng.api.networking.IGridHost;
+import appeng.api.util.DimensionalCoord;
 
-public interface IGridProxyable {
-    IGridNode getGridNode(AEPartLocation dir);
+public interface IGridProxyable extends IGridHost {
     AENetworkProxy getProxy();
+    DimensionalCoord getLocation();
+    void gridChanged();
 }

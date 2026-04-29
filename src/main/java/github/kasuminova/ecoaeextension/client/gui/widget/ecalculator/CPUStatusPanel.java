@@ -18,10 +18,12 @@ import github.kasuminova.ecoaeextension.common.container.data.ECalculatorData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -61,7 +63,8 @@ public class CPUStatusPanel extends SizedColumn {
 
     @Override
     public boolean onGuiEvent(final GuiEvent event) {
-        if (event instanceof ECGUIDataUpdateEvent ecGuiEvent) {
+        if (event instanceof ECGUIDataUpdateEvent) {
+            final ECGUIDataUpdateEvent ecGuiEvent = (ECGUIDataUpdateEvent) event;
             final GuiECalculatorController ecGUI = ecGuiEvent.getECGui();
             final ECalculatorData data = ecGUI.getData();
             final List<ECalculatorData.ThreadCoreData> threadCores = data.threadCores();
@@ -165,20 +168,30 @@ public class CPUStatusPanel extends SizedColumn {
                 BACKGROUND_OVERLAY.render(renderPos, gui);
             }
             if (this.overlay != null) {
-                TextureManager manager = gui.getGui().mc.getTextureManager();
-                manager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                TextureManager manager = Minecraft.getMinecraft().getTextureManager();
+                manager.bindTexture(TextureMap.locationBlocksTexture);
                 final int posX = renderPos.posX() + 5;
                 final int posY = renderPos.posY() + 5;
-                gui.getGui().drawTexturedModalRect(posX, posY, this.overlay, 16, 16);
+                float minU = this.overlay.getMinU();
+                float maxU = this.overlay.getMaxU();
+                float minV = this.overlay.getMinV();
+                float maxV = this.overlay.getMaxV();
+                Tessellator tessellator = Tessellator.instance;
+                tessellator.startDrawingQuads();
+                tessellator.addVertexWithUV(posX, posY + 16, 0, minU, maxV);
+                tessellator.addVertexWithUV(posX + 16, posY + 16, 0, maxU, maxV);
+                tessellator.addVertexWithUV(posX + 16, posY, 0, maxU, minV);
+                tessellator.addVertexWithUV(posX, posY, 0, minU, minV);
+                tessellator.draw();
             }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(renderPos.posX() + TEXT_OFFSET_X, renderPos.posY() + TEXT_OFFSET_Y, 0);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(renderPos.posX() + TEXT_OFFSET_X, renderPos.posY() + TEXT_OFFSET_Y, 0);
             {
-                GlStateManager.pushMatrix();
-                GlStateManager.scale(.6F, .6F, .6F);
+                GL11.glPushMatrix();
+                GL11.glScalef(.6F, .6F, .6F);
                 {
-                    final FontRenderer fr = gui.getGui().mc.fontRenderer;
+                    final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
                     final String text;
                     if (this.hyper) {
                         text = String.format("§b%d§r / §9%d§r (§e+%d§r)", cpus, maxThreads, maxHyperThreads);
@@ -186,11 +199,11 @@ public class CPUStatusPanel extends SizedColumn {
                         text = String.format("§b%d§r / §9%d§r", cpus, maxThreads);
                     }
                     fr.drawStringWithShadow(text, 0, 0, 0xFFFFFFFF);
-                    GlStateManager.color(1F, 1F, 1F, 1F);
+                    GL11.glColor4f(1F, 1F, 1F, 1F);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
             }
-            GlStateManager.popMatrix();
+            GL11.glPopMatrix();
 
             super.renderInternal(gui, renderSize, renderPos, mousePos);
         }

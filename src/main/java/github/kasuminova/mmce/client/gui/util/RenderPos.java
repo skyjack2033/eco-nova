@@ -14,4 +14,16 @@ public class RenderPos {
         this.y = y;
     }
 
+    public int posX() {
+        return x;
+    }
+
+    public int posY() {
+        return y;
+    }
+
+    public RenderPos add(RenderPos other) {
+        return new RenderPos(x + other.x, y + other.y);
+    }
+
 }

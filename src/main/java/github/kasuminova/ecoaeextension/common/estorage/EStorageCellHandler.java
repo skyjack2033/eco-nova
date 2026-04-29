@@ -27,7 +27,7 @@ public class EStorageCellHandler extends BasicCellHandler {
 
     @Override
     public ICellInventoryHandler getCellInventory(final ItemStack is, final ISaveProvider host, final StorageChannel channel) {
-        final ICellInventory<T> inv = EStorageCellInventory.createInventory(is, host);
+        final ICellInventory inv = EStorageCellInventory.createInventory(is, host);
         if (inv == null || inv.getChannel() != channel) {
             return null;
         }

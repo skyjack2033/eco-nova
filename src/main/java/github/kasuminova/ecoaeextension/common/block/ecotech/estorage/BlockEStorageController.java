@@ -36,7 +36,7 @@ public class BlockEStorageController extends BlockController {
     public static final BlockEStorageController L6;
     public static final BlockEStorageController L9;
 
-    public static final AxisAlignedBB FORMED_AABB = new AxisAlignedBB(-1.0D, -1.0D, -1.0D, 1.0D, 2.0D, 1.0D);
+    public static final AxisAlignedBB FORMED_AABB = AxisAlignedBB.getBoundingBox(-1.0D, -1.0D, -1.0D, 1.0D, 2.0D, 1.0D);
 
     static {
         L4 = new BlockEStorageController("l4");
@@ -54,25 +54,22 @@ public class BlockEStorageController extends BlockController {
         this.setHardness(20.0F);
         this.setResistance(2000.0F);
         this.setHarvestLevel("pickaxe", 2);
-        this.fullBlock = false;
         this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
         registryName = new ResourceLocation(ECOAEExtension.MOD_ID, "extendable_digital_storage_subsystem_" + level);
-        machineRegistryName = new ResourceLocation(ModularMachinery.MODID, registryName.getPath());
-        setRegistryName(registryName);
-        setTranslationKey(ECOAEExtension.MOD_ID + '.' + registryName.getPath());
+        machineRegistryName = new ResourceLocation(ModularMachinery.MODID, registryName.getResourcePath());
+        setBlockName(ECOAEExtension.MOD_ID + '.' + registryName.getResourcePath());
     }
 
-    @Override
     public int getLightValue(@Nonnull final IBlockState state) {
         return state.getValue(FORMED) ? 10 : 0;
     }
 
     @Override
-    public boolean onBlockActivated(final World worldIn, @Nonnull final BlockPos pos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer playerIn, @Nonnull final ForgeDirection facing, final float hitX, final float hitY, final float hitZ) {
+    public boolean onBlockActivated(final World worldIn, final int x, final int y, final int z, final EntityPlayer playerIn, final int side, final float hitX, final float hitY, final float hitZ) {
         if (!worldIn.isRemote) {
-            TileEntity te = worldIn.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+            TileEntity te = worldIn.getTileEntity(x, y, z);
             if (te instanceof EStorageController controller && controller.isStructureFormed()) {
-                playerIn.openGui(ECOAEExtension.MOD_ID, CommonProxy.GuiType.ESTORAGE_CONTROLLER.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
+                playerIn.openGui(ECOAEExtension.MOD_ID, CommonProxy.GuiType.ESTORAGE_CONTROLLER.ordinal(), worldIn, x, y, z);
             }
         }
         return true;
@@ -80,12 +77,6 @@ public class BlockEStorageController extends BlockController {
 
     public DynamicMachine getParentMachine() {
         return MachineRegistry.getRegistry().getMachine(machineRegistryName);
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(final World world, final IBlockState state) {
-        return new EStorageController(machineRegistryName);
     }
 
     @Nullable

@@ -5,6 +5,7 @@ import github.kasuminova.mmce.common.helper.IDynamicPatternInfo;
 import github.kasuminova.mmce.common.util.TimeRecorder;
 import hellfirepvp.modularmachinery.common.machine.DynamicMachine;
 import hellfirepvp.modularmachinery.common.util.MachinePattern;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -74,8 +75,11 @@ public class TileMultiblockMachineController extends TileEntitySynchronized {
     }
 
     public void notifyStructureFormedState(boolean formed) {
-        if (worldObj == null || getPos() == null) return;
-        IBlockState state = worldObj.getBlockState(getPos());
+        if (worldObj == null) return;
+        BlockPos pos = getPos();
+        if (pos == null) return;
+        Block block = worldObj.getBlock(pos.getX(), pos.getY(), pos.getZ());
+        IBlockState state = block.getStateFromMeta(worldObj.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ()));
         // Stub for 1.7.10 port
     }
 

@@ -70,8 +70,17 @@ public abstract class Graph extends SizedColumn {
     }
 
     @Override
+    public void render(RenderPos renderPos, WidgetGui widgetGui) {
+        MousePos mousePos = new MousePos(widgetGui.mouseX, widgetGui.mouseY);
+        RenderSize renderSize = new RenderSize(getWidth(), getHeight());
+        preRenderInternal(widgetGui, renderSize, renderPos, mousePos);
+        renderInternal(widgetGui, renderSize, renderPos, mousePos);
+        super.render(renderPos, widgetGui);
+    }
+
+    @Override
     protected void preRenderInternal(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
-        if (isMouseOverGraphText(mousePos.mouseX(), mousePos.mouseY()) && !focused) {
+        if (isMouseOverGraphText(mousePos.x, mousePos.y) && !focused) {
             focused = true;
             graphParent.getControllerGUI().onGraphFocusUpdate(this);
             graphParent.getGraphBar().setPercentage(value, reverseColor);
@@ -94,10 +103,10 @@ public abstract class Graph extends SizedColumn {
         if (!focused) {
             GL11.glColor4f(1F, 1F, 1F, .4F);
         }
-        GuiScreen gui = widgetGui.getGui();
+        GuiScreen gui = widgetGui.gui;
         gui.mc.getTextureManager().bindTexture(BG_TEX_RES);
         gui.drawTexturedModalRect(
-                renderPos.posX(), renderPos.posY() + this.label.getHeight(),
+                renderPos.x, renderPos.y + this.label.getHeight(),
                 bgTexX, bgTexY,
                 bgTexWidth, bgTexHeight
         );

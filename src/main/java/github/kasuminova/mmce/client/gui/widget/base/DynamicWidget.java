@@ -1,7 +1,11 @@
 package github.kasuminova.mmce.client.gui.widget.base;
 
+import github.kasuminova.mmce.client.gui.util.MousePos;
 import github.kasuminova.mmce.client.gui.util.RenderPos;
+import github.kasuminova.mmce.client.gui.util.RenderSize;
 import github.kasuminova.mmce.client.gui.widget.event.GuiEvent;
+
+import java.util.List;
 
 public abstract class DynamicWidget {
 
@@ -13,13 +17,53 @@ public abstract class DynamicWidget {
     private boolean rightAligned = false;
     private boolean verticalCentering = false;
 
-    public abstract void render(RenderPos renderPos, WidgetGui widgetGui);
+    public void render(RenderPos renderPos, WidgetGui widgetGui) {
+    }
+
+    public void render(WidgetGui widgetGui, RenderSize renderSize, RenderPos renderPos, MousePos mousePos) {
+        render(renderPos, widgetGui);
+    }
 
     public boolean onGuiEvent(GuiEvent event) {
         return false;
     }
 
     public void update(WidgetGui gui) {
+    }
+
+    public void initWidget(WidgetGui gui) {
+    }
+
+    protected void preRenderInternal(WidgetGui gui, RenderSize renderSize, RenderPos renderPos, MousePos mousePos) {
+    }
+
+    protected void renderInternal(WidgetGui widgetGui, RenderSize renderSize, RenderPos renderPos, MousePos mousePos) {
+    }
+
+    protected void postRenderInternal(WidgetGui gui, RenderSize renderSize, RenderPos renderPos, MousePos mousePos) {
+    }
+
+    public List<String> getHoverTooltips(WidgetGui widgetGui, MousePos mousePos) {
+        return java.util.Collections.emptyList();
+    }
+
+    public DynamicWidget setWidthHeight(int width, int height) {
+        return setWidth(width).setHeight(height);
+    }
+
+    public void setUseScissor(boolean useScissor) {
+    }
+
+    public boolean isInvisible() {
+        return !visible;
+    }
+
+    public boolean isMouseOver(MousePos mousePos) {
+        return false;
+    }
+
+    public DynamicWidget setMargin(int top, int right, int bottom, int left) {
+        return this;
     }
 
     public int getAbsX() {

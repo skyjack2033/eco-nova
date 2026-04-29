@@ -3,6 +3,7 @@ package github.kasuminova.ecoaeextension.client.gui.widget;
 import github.kasuminova.mmce.client.gui.util.*;
 import github.kasuminova.mmce.client.gui.widget.base.DynamicWidget;
 import github.kasuminova.mmce.client.gui.widget.base.WidgetGui;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ProgressBar extends DynamicWidget {
 
     protected List<TextureProperties> progressTextures = new ArrayList<>();
 
-    protected AnimationValue progress = AnimationValue.ofFinished(0, 500, .25, .1, .25, 1);
+    protected AnimationValue progress = AnimationValue.ofFinished(0F, 500F, .25F, .1F, .25F, 1F);
     protected double maxProgress = 1;
     protected boolean shouldUseAnimation = true;
 
@@ -36,7 +37,7 @@ public class ProgressBar extends DynamicWidget {
         }
 
         // ProgressBar / Foreground.
-        if (progressTextures.stackSize <= 0 || maxProgress <= 0) {
+        if (progressTextures.size() <= 0 || maxProgress <= 0) {
             return;
         }
 
@@ -51,7 +52,7 @@ public class ProgressBar extends DynamicWidget {
             if (leftToRight) {
                 // Left to right.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(gui.mc.getTextureManager());
+                    tex.bind(Minecraft.getMinecraft().getTextureManager());
                     gui.drawTexturedModalRect(
                             renderPos.posX(), renderPos.posY(),
                             tex.texX(), tex.texY(),
@@ -61,7 +62,7 @@ public class ProgressBar extends DynamicWidget {
             } else {
                 // Right to left.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(gui.mc.getTextureManager());
+                    tex.bind(Minecraft.getMinecraft().getTextureManager());
                     gui.drawTexturedModalRect(
                             renderPos.posX() + (int) (tex.width() * (1 - renderPercent)), renderPos.posY(),
                             tex.texX(), tex.texY(),
@@ -74,7 +75,7 @@ public class ProgressBar extends DynamicWidget {
             if (leftToRight) {
                 // Down to up.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(gui.mc.getTextureManager());
+                    tex.bind(Minecraft.getMinecraft().getTextureManager());
                     gui.drawTexturedModalRect(
                             renderPos.posX(), renderPos.posY(),
                             tex.texX(), tex.texY(),
@@ -84,7 +85,7 @@ public class ProgressBar extends DynamicWidget {
             } else {
                 // Up to down.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(gui.mc.getTextureManager());
+                    tex.bind(Minecraft.getMinecraft().getTextureManager());
                     gui.drawTexturedModalRect(
                             renderPos.posX(), renderPos.posY() + (int) (tex.height() * (1 - renderPercent)),
                             tex.texX(), tex.texY() + (int) (tex.height() * (1 - renderPercent)),
@@ -96,7 +97,7 @@ public class ProgressBar extends DynamicWidget {
     }
 
     protected Optional<TextureProperties> findProgressForegroundTex(final double percent) {
-        if (progressTextures.stackSize <= 0) {
+        if (progressTextures.size() <= 0) {
             return Optional.empty();
         }
 
@@ -109,7 +110,7 @@ public class ProgressBar extends DynamicWidget {
     }
 
     protected Optional<TextureProperties> findProgressBackgroundTex(final double percent) {
-        if (progressTextures.stackSize <= 0) {
+        if (progressTextures.size() <= 0) {
             return Optional.empty();
         }
 

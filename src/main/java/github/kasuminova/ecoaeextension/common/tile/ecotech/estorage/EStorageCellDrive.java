@@ -1,6 +1,7 @@
 package github.kasuminova.ecoaeextension.common.tile.ecotech.estorage;
 
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellInventory;
@@ -70,6 +71,11 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
         this.driveInv.setFilter(CellInvFilter.INSTANCE);
     }
 
+    @Override
+    public int getInventoryStackLimit() {
+        return 64;
+    }
+
     public static int getMaxTypes(final EStorageCellData data) {
         switch (data.type()) {
             case EMPTY: return 0;
@@ -131,7 +137,7 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
         // Static update or changed update.
         if (worldObj.getTotalWorldTime() % 200 == 0) {
             BlockPos pos = new BlockPos(xCoord, yCoord, zCoord);
-            ECOAEExtension.NET_CHANNEL.sendToAllTracking(
+            ECOAEExtension.NET_CHANNEL.sendToAllAround(
                     new PktCellDriveStatusUpdate(new BlockPos(xCoord, yCoord, zCoord), writing),
                     new NetworkRegistry.TargetPoint(
                             worldObj.provider.getDimension(),
@@ -345,7 +351,11 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
                     myInv.getAvailableItems(myChanges);
                 }
             }
-            gs.postAlterationOfStoredItems(chan, myChanges, src);
+            List<IAEStack> changesList = new java.util.ArrayList<>();
+            for (final IAEStack stack : myChanges) {
+                changesList.add(stack);
+            }
+            gs.postAlterationOfStoredItems(chan, changesList, (BaseActionSource) src);
         }
     }
 

@@ -6,7 +6,6 @@ import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalcula
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -36,8 +35,8 @@ public class PktECalculatorGUIData implements IMessage, IMessageHandler<PktECalc
 
     @Override
     public IMessage onMessage(final PktECalculatorGUIData message, final MessageContext ctx) {
-        if (FMLCommonHandler.instance().getSide().isClient()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> processPacket(message));
+        if (ctx.side.isClient()) {
+            processPacket(message);
         }
         return null;
     }

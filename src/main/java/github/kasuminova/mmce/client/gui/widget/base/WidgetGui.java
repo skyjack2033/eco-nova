@@ -14,6 +14,10 @@ public class WidgetGui {
         this.mouseY = mouseY;
     }
 
+    public GuiScreen getGui() {
+        return gui;
+    }
+
     public static WidgetGui of(GuiScreen gui) {
         return new WidgetGui(gui, 0, 0);
     }

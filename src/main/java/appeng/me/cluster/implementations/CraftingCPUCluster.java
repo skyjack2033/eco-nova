@@ -32,4 +32,5 @@ public class CraftingCPUCluster implements ICraftingCPU {
     public void addListener(IMEMonitorHandlerReceiver listener, Object filter) {}
     public void removeListener(IMEMonitorHandlerReceiver listener) {}
     public void readFromNBT(net.minecraft.nbt.NBTTagCompound compound) {}
+    public void writeToNBT(net.minecraft.nbt.NBTTagCompound compound) {}
 }

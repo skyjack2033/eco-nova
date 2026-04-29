@@ -14,4 +14,12 @@ public class RenderSize {
         this.height = height;
     }
 
+    public int width() {
+        return width;
+    }
+
+    public int height() {
+        return height;
+    }
+
 }

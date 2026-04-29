@@ -10,11 +10,10 @@ import appeng.api.networking.events.*;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellContainer;
-import appeng.api.storage.ICellInventory;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.util.AECableType;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -176,19 +175,19 @@ public class EStorageMEChannel extends EStoragePart implements ICellContainer, I
 
     @Nullable
     @Override
-    public IGridNode getGridNode(@Nonnull final AEPartLocation dir) {
+    public IGridNode getGridNode(@Nonnull final net.minecraftforge.common.util.ForgeDirection dir) {
         return proxy.getNode();
     }
 
     @Nonnull
     @Override
-    public AECableType getCableConnectionType(@Nonnull final AEPartLocation dir) {
-        return AECableType.DENSE_SMART;
+    public AECableType getCableConnectionType(@Nonnull final net.minecraftforge.common.util.ForgeDirection dir) {
+        return AECableType.DENSE;
     }
 
     @Override
     public void securityBreak() {
-        getWorld().destroyBlock(getPos(), true);
+        getWorld().destroyBlock(xCoord, yCoord, zCoord, true);
     }
 
     @Override
@@ -223,7 +222,7 @@ public class EStorageMEChannel extends EStoragePart implements ICellContainer, I
             proxy.onReady();
             partController.recalculateEnergyUsage();
             List<EStorageCellDrive> cellDrives = partController.getCellDrives();
-            if (cellDrives != null && cellDrives.stackSize > 0) {
+            if (cellDrives != null && cellDrives.size() > 0) {
                 try {
                     proxy.getGrid().postEvent(new MENetworkCellArrayUpdate());
                 } catch (GridAccessException ignored) {
@@ -246,6 +245,6 @@ public class EStorageMEChannel extends EStoragePart implements ICellContainer, I
     }
 
     @Override
-    public void saveChanges(@Nullable final ICellInventory<?> cellInventory) {
+    public void saveChanges(final IMEInventory cellInventory) {
     }
 }

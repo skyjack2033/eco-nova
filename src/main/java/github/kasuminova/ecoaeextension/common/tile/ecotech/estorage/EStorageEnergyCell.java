@@ -33,7 +33,7 @@ public class EStorageEnergyCell extends EStoragePart implements Comparable<EStor
         }
         currentStatus = newStatus;
 
-        if (world == null) {
+        if (worldObj == null) {
             return;
         }
         markForUpdateSync();
@@ -107,10 +107,13 @@ public class EStorageEnergyCell extends EStoragePart implements Comparable<EStor
         maxEnergyStore = tag.getDouble("maxEnergyStore");
         currentStatus = getStatusFromFillFactor(getFillFactor());
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() && world != null) {
-            IBlockState current = world.getBlockState(pos);
-            if (current.getBlock() instanceof BlockEStorageEnergyCell) {
-                world.setBlockState(pos, current.withProperty(EnergyCellStatus.STATUS, EStorageEnergyCell.getStatusFromFillFactor(getFillFactor())));
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() && worldObj != null) {
+            net.minecraft.block.Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+            if (block instanceof BlockEStorageEnergyCell) {
+                int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+                IBlockState current = block.getStateFromMeta(meta);
+                IBlockState newState = current.withProperty(EnergyCellStatus.STATUS, EStorageEnergyCell.getStatusFromFillFactor(getFillFactor()));
+                worldObj.setBlock(xCoord, yCoord, zCoord, newState.getBlock(), newState.getBlock().getMetaFromState(newState), 3);
             }
         }
     }

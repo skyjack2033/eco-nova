@@ -54,18 +54,16 @@ public class BlockECalculatorController extends BlockController {
         this.setHardness(20.0F);
         this.setResistance(2000.0F);
         this.setHarvestLevel("pickaxe", 2);
-        this.fullBlock = false;
 
         registryName = new ResourceLocation(ECOAEExtension.MOD_ID, "extendable_calculator_subsystem_" + level);
-        machineRegistryName = new ResourceLocation(ModularMachinery.MODID, registryName.getPath());
-        setRegistryName(registryName);
-        setTranslationKey(ECOAEExtension.MOD_ID + '.' + registryName.getPath());
+        machineRegistryName = new ResourceLocation(ModularMachinery.MODID, registryName.getResourcePath());
+        setBlockName(ECOAEExtension.MOD_ID + '.' + registryName.getResourcePath());
     }
 
     @Nonnull
     public IBlockState getActualState(@Nonnull IBlockState state, @Nonnull IBlockAccess worldIn, @Nonnull BlockPos pos) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return super.getActualState(state, worldIn, pos);
+            return state;
         }
         return state;
     }

@@ -2,7 +2,6 @@ package github.kasuminova.ecoaeextension.common.estorage;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
@@ -22,8 +21,9 @@ public class ECellDriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler
 
     protected final EStorageCellDrive drive;
 
-    public ECellDriveWatcher(final IMEInventory i, final StorageChannel channel, final EStorageCellDrive drive) {
-        super(i);
+    @SuppressWarnings("unchecked")
+    public ECellDriveWatcher(final IMEInventory<? extends T> i, final StorageChannel channel, final EStorageCellDrive drive) {
+        super((IMEInventory) i);
         this.drive = drive;
     }
 
@@ -38,7 +38,7 @@ public class ECellDriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler
             if (proxy.isActive()) {
                 try {
                     List<T> changed = Collections.singletonList(input.copy().setStackSize(input.getStackSize() - (remainder == null ? 0 : remainder.getStackSize())));
-                    proxy.getStorage().postAlterationOfStoredItems(this.getChannel(), changed, channel.getSource());
+                    proxy.getStorage().postAlterationOfStoredItems(this.getChannel(), changed, (BaseActionSource) channel.getSource());
                 } catch (GridAccessException e) {
                     ECOAEExtension.log.warn(e.toString());
                 }
@@ -59,7 +59,7 @@ public class ECellDriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler
             if (proxy.isActive()) {
                 try {
                     List<T> changed = Collections.singletonList(request.copy().setStackSize(-extractable.getStackSize()));
-                    proxy.getStorage().postAlterationOfStoredItems(this.getChannel(), changed, channel.getSource());
+                    proxy.getStorage().postAlterationOfStoredItems(this.getChannel(), changed, (BaseActionSource) channel.getSource());
                 } catch (GridAccessException e) {
                     ECOAEExtension.log.warn(e.toString());
                 }
@@ -68,16 +68,6 @@ public class ECellDriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler
         }
 
         return extractable;
-    }
-
-    @Override
-    public boolean isSticky() {
-        if (this.getInternal() instanceof ICellInventoryHandler) {
-            ICellInventoryHandler cellInventoryHandler = (ICellInventoryHandler) this.getInternal();
-            return cellInventoryHandler.isSticky();
-        }
-
-        return super.isSticky();
     }
 
 }

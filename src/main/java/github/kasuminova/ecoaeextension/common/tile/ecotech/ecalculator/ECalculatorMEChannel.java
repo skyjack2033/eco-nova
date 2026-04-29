@@ -125,18 +125,18 @@ public class ECalculatorMEChannel extends ECalculatorPart implements IActionHost
     @Nonnull
     
     public AECableType getCableConnectionType(@Nonnull final AEPartLocation dir) {
-        return AECableType.DENSE_SMART;
+        return AECableType.DENSE;
     }
 
     @Nonnull
     
     public AECableType getCableConnectionType(@Nonnull final net.minecraftforge.common.util.ForgeDirection dir) {
-        return AECableType.DENSE_SMART;
+        return AECableType.DENSE;
     }
 
     
     public void securityBreak() {
-        getWorld().destroyBlock(getPos(), true);
+        getWorld().destroyBlock(xCoord, yCoord, zCoord, true);
     }
 
     
