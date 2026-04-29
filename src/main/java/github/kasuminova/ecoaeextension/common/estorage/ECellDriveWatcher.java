@@ -5,7 +5,9 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEInventoryHandler;
@@ -23,8 +25,17 @@ public class ECellDriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler
 
     @SuppressWarnings("unchecked")
     public ECellDriveWatcher(final IMEInventory<? extends T> i, final StorageChannel channel, final EStorageCellDrive drive) {
-        super((IMEInventory) i);
+        super((IMEInventory<T>) i, getStackType(channel));
         this.drive = drive;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends IAEStack<T>> IAEStackType<T> getStackType(final StorageChannel channel) {
+        if (channel == StorageChannel.ITEMS) {
+            return (IAEStackType<T>) AEStackTypeRegistry.getType("items");
+        } else {
+            return (IAEStackType<T>) AEStackTypeRegistry.getType("fluids");
+        }
     }
 
     @Override

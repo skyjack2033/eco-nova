@@ -51,7 +51,8 @@ public abstract class DynamicWidget {
         return setWidth(width).setHeight(height);
     }
 
-    public void setUseScissor(boolean useScissor) {
+    public DynamicWidget setUseScissor(boolean useScissor) {
+        return this;
     }
 
     public boolean isInvisible() {
@@ -65,6 +66,31 @@ public abstract class DynamicWidget {
     public DynamicWidget setMargin(int top, int right, int bottom, int left) {
         return this;
     }
+
+    public DynamicWidget setMarginLeft(int left) {
+        return this;
+    }
+
+    public DynamicWidget setMarginUp(int up) {
+        return this;
+    }
+
+    public DynamicWidget setMarginRight(int right) {
+        return this;
+    }
+
+    public DynamicWidget setMarginDown(int down) {
+        return this;
+    }
+
+    public int getMarginUp() { return 0; }
+    public int getMarginDown() { return 0; }
+    public int getMarginLeft() { return 0; }
+    public int getMarginRight() { return 0; }
+    public boolean isDisabled() { return false; }
+    public boolean onMouseDWheel(MousePos mousePos, RenderPos renderPos, int wheel) { return false; }
+    public boolean onMouseClick(MousePos mousePos, RenderPos renderPos, int mouseButton) { return false; }
+    public int getTotalHeight() { return height; }
 
     public int getAbsX() {
         return absX;

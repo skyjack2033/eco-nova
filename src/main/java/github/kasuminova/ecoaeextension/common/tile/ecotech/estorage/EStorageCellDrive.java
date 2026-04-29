@@ -13,7 +13,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.storage.data.ISaveProvider;
+import appeng.api.storage.ISaveProvider;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.inventory.AppEngCellInventory;
@@ -48,6 +48,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static appeng.helpers.ItemStackHelper.stackFromNBT;
@@ -140,7 +141,7 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
             ECOAEExtension.NET_CHANNEL.sendToAllAround(
                     new PktCellDriveStatusUpdate(new BlockPos(xCoord, yCoord, zCoord), writing),
                     new NetworkRegistry.TargetPoint(
-                            worldObj.provider.getDimension(),
+                            worldObj.provider.dimensionId,
                             pos.getX(), pos.getY(), pos.getZ(),
                             -1)
             );
@@ -149,7 +150,7 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
             ECOAEExtension.NET_CHANNEL.sendToAllAround(
                     new PktCellDriveStatusUpdate(new BlockPos(xCoord, yCoord, zCoord), writing),
                     new NetworkRegistry.TargetPoint(
-                            worldObj.provider.getDimension(),
+                            worldObj.provider.dimensionId,
                             pos.getX(), pos.getY(), pos.getZ(),
                             16)
             );
@@ -355,7 +356,7 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
             for (final IAEStack stack : myChanges) {
                 changesList.add(stack);
             }
-            gs.postAlterationOfStoredItems(chan, changesList, (BaseActionSource) src);
+            gs.postAlterationOfStoredItems(chan, (Iterable) changesList, (BaseActionSource) src);
         }
     }
 

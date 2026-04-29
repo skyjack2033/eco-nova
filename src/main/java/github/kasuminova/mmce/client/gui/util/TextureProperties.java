@@ -89,6 +89,14 @@ public class TextureProperties {
         render(pos, gui.gui);
     }
 
+    public ResourceLocation texRes() { return texture; }
+
+    public void renderIfPresent(RenderPos pos, WidgetGui gui) {
+        if (texture != null) {
+            render(pos, gui);
+        }
+    }
+
     public void render(ResourceLocation textureLocation, RenderPos pos, RenderSize size, WidgetGui gui) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         ResourceLocation tex = this.texture != null ? this.texture : textureLocation;

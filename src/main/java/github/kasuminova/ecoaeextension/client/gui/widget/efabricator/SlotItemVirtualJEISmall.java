@@ -6,6 +6,7 @@ import github.kasuminova.mmce.client.gui.util.RenderSize;
 import github.kasuminova.mmce.client.gui.widget.base.WidgetGui;
 import github.kasuminova.mmce.client.gui.widget.slot.SlotItemVirtualJEI;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.item.ItemStack;
 
@@ -32,24 +33,24 @@ public class SlotItemVirtualJEISmall extends SlotItemVirtualJEI {
 
     @Override
     public void render(final WidgetGui widgetGui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(.5, .5, 1);
+        GL11.glPushMatrix();
+        GL11.glScalef(.5F, .5F, 1F);
         super.render(widgetGui, renderSize, renderPos.add(renderPos).add(new RenderPos(1, 1)), mousePos);
-        GlStateManager.popMatrix();
+        GL11.glPopMatrix();
     }
 
     @Override
     protected void drawHoverOverlay(final MousePos mousePos, final int rx, final int ry) {
         if (mouseOver) {
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-            GlStateManager.colorMask(true, true, true, false);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glColorMask(true, true, true, false);
             GuiScreen.drawRect(rx, ry, rx + 16, ry + 16, new Color(255, 255, 255, 150).getRGB());
-            GlStateManager.enableBlend();
-            GlStateManager.colorMask(true, true, true, true);
-            GlStateManager.color(1F, 1F, 1F, 1F);
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glColorMask(true, true, true, true);
+            GL11.glColor4f(1F, 1F, 1F, 1F);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
     }
 

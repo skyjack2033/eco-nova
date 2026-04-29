@@ -14,10 +14,12 @@ public class Button6State extends Button5State {
     protected TextureProperties clickedMouseDownTexture = TextureProperties.EMPTY;
 
     @Override
-    public void render(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
+    public void render(final RenderPos renderPos, final WidgetGui gui) {
         if (!isVisible()) {
             return;
         }
+        RenderSize renderSize = new RenderSize(width, height);
+        MousePos mousePos = new MousePos(gui.mouseX, gui.mouseY);
         if (isUnavailable()) {
             unavailableTexture.render(textureLocation, renderPos, renderSize, gui);
             return;

@@ -3,6 +3,7 @@ package github.kasuminova.mmce.client.gui.widget.container;
 public class ScrollingColumn extends WidgetContainer {
 
     private int scrollY;
+    protected Scrollbar scrollbar = new Scrollbar();
 
     public void scroll(int amount) {
         this.scrollY += amount;
@@ -14,6 +15,10 @@ public class ScrollingColumn extends WidgetContainer {
 
     public void setScrollY(int scrollY) {
         this.scrollY = scrollY;
+    }
+
+    public Scrollbar getScrollbar() {
+        return scrollbar;
     }
 
 }

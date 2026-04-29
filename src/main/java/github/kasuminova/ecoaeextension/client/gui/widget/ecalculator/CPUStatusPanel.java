@@ -48,17 +48,17 @@ public class CPUStatusPanel extends SizedColumn {
     @Override
     protected void renderInternal(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
         BACKGROUND.render(renderPos, gui);
-        super.renderInternal(gui, renderSize, renderPos.add(new RenderPos(OFFSET_X, OFFSET_Y)), mousePos);
+        super.renderInternal(gui, renderSize, new RenderPos(renderPos.x + OFFSET_X, renderPos.y + OFFSET_Y), mousePos);
     }
 
     @Override
     protected void preRenderInternal(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
-        super.preRenderInternal(gui, renderSize, renderPos.add(new RenderPos(OFFSET_X, OFFSET_Y)), mousePos);
+        super.preRenderInternal(gui, renderSize, new RenderPos(renderPos.x + OFFSET_X, renderPos.y + OFFSET_Y), mousePos);
     }
 
     @Override
     protected void postRenderInternal(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
-        super.postRenderInternal(gui, renderSize, renderPos.add(new RenderPos(OFFSET_X, OFFSET_Y)), mousePos);
+        super.postRenderInternal(gui, renderSize, new RenderPos(renderPos.x + OFFSET_X, renderPos.y + OFFSET_Y), mousePos);
     }
 
     @Override

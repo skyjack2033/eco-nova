@@ -78,8 +78,6 @@ public class TileMultiblockMachineController extends TileEntitySynchronized {
         if (worldObj == null) return;
         BlockPos pos = getPos();
         if (pos == null) return;
-        Block block = worldObj.getBlock(pos.getX(), pos.getY(), pos.getZ());
-        IBlockState state = block.getStateFromMeta(worldObj.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ()));
         // Stub for 1.7.10 port
     }
 

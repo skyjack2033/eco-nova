@@ -21,6 +21,13 @@ public class AbstractPartEncoder implements IGridProxyable {
     }
 
 
+    public DimensionalCoord getLocation() {
+        return null;
+    }
+
     public void securityBreak() {
+    }
+
+    public void gridChanged() {
     }
 }

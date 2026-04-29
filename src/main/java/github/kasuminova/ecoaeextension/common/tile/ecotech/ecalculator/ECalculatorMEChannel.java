@@ -136,7 +136,7 @@ public class ECalculatorMEChannel extends ECalculatorPart implements IActionHost
 
     
     public void securityBreak() {
-        getWorld().destroyBlock(xCoord, yCoord, zCoord, true);
+        worldObj.setBlockToAir(xCoord, yCoord, zCoord);
     }
 
     

@@ -6,7 +6,7 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.ISaveProvider;
+import appeng.api.storage.ISaveProvider;
 
 import java.util.ArrayList;
 import java.util.List;

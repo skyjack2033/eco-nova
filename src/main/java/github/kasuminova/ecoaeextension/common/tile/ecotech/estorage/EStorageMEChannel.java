@@ -187,7 +187,7 @@ public class EStorageMEChannel extends EStoragePart implements ICellContainer, I
 
     @Override
     public void securityBreak() {
-        getWorld().destroyBlock(xCoord, yCoord, zCoord, true);
+        worldObj.setBlockToAir(xCoord, yCoord, zCoord);
     }
 
     @Override

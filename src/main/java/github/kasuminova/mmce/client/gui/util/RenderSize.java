@@ -22,4 +22,12 @@ public class RenderSize {
         return height;
     }
 
+    public RenderSize smaller(RenderSize other) {
+        return new RenderSize(Math.min(width, other.width), Math.min(height, other.height));
+    }
+
+    public boolean isHeightLimited() {
+        return false;
+    }
+
 }

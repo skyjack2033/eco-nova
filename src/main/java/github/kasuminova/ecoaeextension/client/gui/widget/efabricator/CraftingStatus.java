@@ -71,11 +71,11 @@ public class CraftingStatus extends SizedColumn {
     @Override
     protected void preRenderInternal(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
         if (!available) {
-            TEXTURE_UNAVAILABLE.render(renderPos, gui.getGui());
+            TEXTURE_UNAVAILABLE.render(renderPos, gui.gui);
         } else if (progress.getProgress() > 0) {
-            TEXTURE_BACKGROUND.render(renderPos, gui.getGui());
+            TEXTURE_BACKGROUND.render(renderPos, gui.gui);
         } else {
-            TEXTURE_BACKGROUND_DISABLED.render(renderPos, gui.getGui());
+            TEXTURE_BACKGROUND_DISABLED.render(renderPos, gui.gui);
         }
         super.preRenderInternal(gui, renderSize, renderPos, mousePos);
     }

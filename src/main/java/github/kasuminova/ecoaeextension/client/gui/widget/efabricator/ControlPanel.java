@@ -96,7 +96,8 @@ public class ControlPanel extends Row {
 
     @Override
     public boolean onGuiEvent(final GuiEvent event) {
-        if (event instanceof EFGUIDataUpdateEvent efGuiEvent) {
+        if (event instanceof EFGUIDataUpdateEvent) {
+            EFGUIDataUpdateEvent efGuiEvent = (EFGUIDataUpdateEvent) event;
             GuiEFabricatorController efGui = efGuiEvent.getEFGui();
             overclocking.setClicked(efGui.getData().overclocked());
             activeCooling.setClicked(efGui.getData().activeCooling());

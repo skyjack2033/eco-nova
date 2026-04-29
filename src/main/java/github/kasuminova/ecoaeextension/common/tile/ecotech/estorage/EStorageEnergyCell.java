@@ -110,10 +110,8 @@ public class EStorageEnergyCell extends EStoragePart implements Comparable<EStor
         if (FMLCommonHandler.instance().getEffectiveSide().isClient() && worldObj != null) {
             net.minecraft.block.Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
             if (block instanceof BlockEStorageEnergyCell) {
-                int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-                IBlockState current = block.getStateFromMeta(meta);
-                IBlockState newState = current.withProperty(EnergyCellStatus.STATUS, EStorageEnergyCell.getStatusFromFillFactor(getFillFactor()));
-                worldObj.setBlock(xCoord, yCoord, zCoord, newState.getBlock(), newState.getBlock().getMetaFromState(newState), 3);
+                int newMeta = getStatusFromFillFactor(getFillFactor()).ordinal();
+                worldObj.setBlock(xCoord, yCoord, zCoord, block, newMeta, 3);
             }
         }
     }

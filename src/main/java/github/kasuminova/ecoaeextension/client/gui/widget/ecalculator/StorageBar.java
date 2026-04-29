@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.longs.LongListIterator;
 import net.minecraft.client.gui.Gui;
+import org.lwjgl.opengl.GL11;
 
 
 import java.util.Comparator;
@@ -45,12 +46,12 @@ public class StorageBar extends DynamicWidget {
     @Override
     public void render(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
         BACKGROUND.render(renderPos, gui);
-        if (this.usedMemory.stackSize <= 0) {
+        if (this.usedMemory.isEmpty()) {
             return;
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(renderPos.posX() + OFFSET_X, renderPos.posY() + OFFSET_Y, 0);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(renderPos.posX() + OFFSET_X, renderPos.posY() + OFFSET_Y, 0);
         {
             int total = 0;
             int color = 0x7F87CEFA;
@@ -78,15 +79,15 @@ public class StorageBar extends DynamicWidget {
                     break;
                 }
 
-                GlStateManager.translate(width, 0, 0);
+                GL11.glTranslatef(width, 0, 0);
                 tmp = color;
                 color = swapColor;
                 swapColor = tmp;
             }
-            GlStateManager.enableBlend();
-            GlStateManager.color(1F, 1F, 1F, 1F);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glColor4f(1F, 1F, 1F, 1F);
         }
-        GlStateManager.popMatrix();
+        GL11.glPopMatrix();
 
         int centerX = renderPos.posX() + OFFSET_X + (renderSize.width() / 2);
         int centerY = renderPos.posY() + OFFSET_Y + (renderSize.height() / 2);
@@ -94,7 +95,8 @@ public class StorageBar extends DynamicWidget {
 
     @Override
     public boolean onGuiEvent(final GuiEvent event) {
-        if (event instanceof ECGUIDataUpdateEvent ecGuiEvent) {
+        if (event instanceof ECGUIDataUpdateEvent) {
+            ECGUIDataUpdateEvent ecGuiEvent = (ECGUIDataUpdateEvent) event;
             GuiECalculatorController ecGui = ecGuiEvent.getECGui();
             ECalculatorData data = ecGui.getData();
             this.totalStorage = data.totalStorage();

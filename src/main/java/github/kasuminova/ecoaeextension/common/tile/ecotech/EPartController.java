@@ -143,8 +143,8 @@ public abstract class EPartController<P extends EPart<?>> extends TileCustomCont
         BlockPos p = getPos();
         Block block = getWorld().getBlock(p.getX(), p.getY(), p.getZ());
         if (getControllerBlock().isInstance(block)) {
-            IBlockState state = block.getStateFromMeta(getWorld().getBlockMetadata(p.getX(), p.getY(), p.getZ()));
-            controllerRotation = state.getValue(FacingProp.HORIZONTALS);
+            int meta = getWorld().getBlockMetadata(p.getX(), p.getY(), p.getZ());
+            controllerRotation = ForgeDirection.getOrientation(meta);
         } else {
             ECOAEExtension.log.warn("Invalid EPartController block at {} !", getPos());
             controllerRotation = ForgeDirection.NORTH;

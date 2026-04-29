@@ -1,19 +1,54 @@
 package appeng.items.contents;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
-public class CellUpgrades implements IItemHandler {
+public class CellUpgrades implements IInventory {
     private final ItemStack cell;
+    private final int upgrades;
 
-    public CellUpgrades(ItemStack cell) {
+    public CellUpgrades(ItemStack cell, int upgrades) {
         this.cell = cell;
+        this.upgrades = upgrades;
     }
 
-    @Override public int getSlots() { return 0; }
-    @Override public ItemStack getStackInSlot(int slot) { return null; }
-    @Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) { return stack; }
-    @Override public ItemStack extractItem(int slot, int amount, boolean simulate) { return null; }
-    @Override public int getSlotLimit(int slot) { return 0; }
-    @Override public boolean isItemValid(int slot, ItemStack stack) { return false; }
+    @Override
+    public int getSizeInventory() { return upgrades; }
+
+    @Override
+    public ItemStack getStackInSlot(int slot) { return null; }
+
+    @Override
+    public ItemStack decrStackSize(int slot, int amount) { return null; }
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(int slot) { return null; }
+
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack stack) { }
+
+    @Override
+    public String getInventoryName() { return "cellupgrades"; }
+
+    @Override
+    public boolean hasCustomInventoryName() { return false; }
+
+    @Override
+    public int getInventoryStackLimit() { return 1; }
+
+    @Override
+    public void markDirty() { }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player) { return true; }
+
+    @Override
+    public void openInventory() { }
+
+    @Override
+    public void closeInventory() { }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack) { return false; }
 }

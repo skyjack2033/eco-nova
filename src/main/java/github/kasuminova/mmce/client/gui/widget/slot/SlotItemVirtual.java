@@ -1,15 +1,36 @@
 package github.kasuminova.mmce.client.gui.widget.slot;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
+import github.kasuminova.mmce.client.gui.util.MousePos;
+import github.kasuminova.mmce.client.gui.util.RenderPos;
+import github.kasuminova.mmce.client.gui.util.RenderSize;
+import github.kasuminova.mmce.client.gui.util.TextureProperties;
+import github.kasuminova.mmce.client.gui.widget.base.DynamicWidget;
+import github.kasuminova.mmce.client.gui.widget.base.WidgetGui;
+import net.minecraft.item.ItemStack;
 
-public class SlotItemVirtual extends Slot {
+public class SlotItemVirtual extends DynamicWidget {
 
-    private static final IInventory EMPTY_INVENTORY = new InventoryBasic("[virtual]", false, 0);
+    protected ItemStack stackInSlot;
 
     public SlotItemVirtual() {
-        super(EMPTY_INVENTORY, 0, 0, 0);
+        this.stackInSlot = null;
+    }
+
+    public void setStackInSlot(final ItemStack stackInSlot) {
+        this.stackInSlot = stackInSlot;
+    }
+
+    public ItemStack getStackInSlot() {
+        return stackInSlot;
+    }
+
+    public SlotItemVirtual setSlotTex(final TextureProperties properties) {
+        return this;
+    }
+
+    @Override
+    public void render(final WidgetGui widgetGui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
+        super.render(widgetGui, renderSize, renderPos, mousePos);
     }
 
 }

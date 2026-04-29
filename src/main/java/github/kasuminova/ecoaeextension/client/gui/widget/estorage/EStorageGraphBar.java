@@ -11,6 +11,7 @@ import github.kasuminova.ecoaeextension.client.gui.GuiEStorageController;
 import github.kasuminova.ecoaeextension.common.util.ColorUtils;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -93,7 +94,7 @@ public class EStorageGraphBar extends DynamicWidget {
         );
 
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GL14.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
         // 渲染顶部
         gui.drawTexturedModalRect(

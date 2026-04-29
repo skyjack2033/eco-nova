@@ -16,9 +16,10 @@ import github.kasuminova.ecoaeextension.client.gui.widget.SizedRow;
 import github.kasuminova.ecoaeextension.client.gui.widget.ecalculator.event.ECGUIDataUpdateEvent;
 import github.kasuminova.ecoaeextension.common.container.data.ECalculatorData;
 import github.kasuminova.ecoaeextension.common.crafttweaker.util.NovaEngUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-
-
+import net.minecraft.util.EnumChatFormatting;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -72,51 +73,51 @@ public class MonitorPanel extends SizedRow {
 
         @Override
         public void render(final WidgetGui gui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(renderPos.posX() + 2, renderPos.posY() + 2, 0);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(renderPos.posX() + 2, renderPos.posY() + 2, 0);
             {
-                final FontRenderer fr = gui.getGui().mc.fontRenderer;
+                final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 
                 // Used Memory
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(4, 4, 0);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(4, 4, 0);
                 {
                     final int length = 32;
                     String memStr = NovaEngUtils.formatNumber(this.usedMemory) + 'B';
                     if (memStr.length() > 6) {
                         memStr = NovaEngUtils.formatNumber(this.usedMemory, 0);
                     }
-                    final String usedMemory = TextFormatting.YELLOW + "U:" + memStr;
+                    final String usedMemory = EnumChatFormatting.YELLOW + "U:" + memStr;
                     memStr = NovaEngUtils.formatNumber(this.usedExtraStorage) + 'B';
                     if (memStr.length() > 6) {
                         memStr = NovaEngUtils.formatNumber(this.usedExtraStorage, 0);
                     }
-                    final String usedExtraMemory = TextFormatting.RED + "E:" + memStr + TextFormatting.RESET;
+                    final String usedExtraMemory = EnumChatFormatting.RED + "E:" + memStr + EnumChatFormatting.RESET;
                     int offsetX = length - fr.getStringWidth(usedMemory);
                     fr.drawStringWithShadow(usedMemory, offsetX, 0, 0xFFFFFF);
                     offsetX = length - fr.getStringWidth(usedExtraMemory);
                     fr.drawStringWithShadow(usedExtraMemory, offsetX, 10, 0xFFFFFF);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
 
                 // Total Memory
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(44, 4, 0);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(44, 4, 0);
                 {
                     String memStr = NovaEngUtils.formatNumber(this.totalStorage) + 'B';
                     if (memStr.length() > 6) {
                         memStr = NovaEngUtils.formatNumber(this.totalStorage, 0);
                     }
-                    final String totalMemory = TextFormatting.GREEN + "T:" + memStr;
+                    final String totalMemory = EnumChatFormatting.GREEN + "T:" + memStr;
                     fr.drawStringWithShadow(totalMemory, 0, 0, 0xFFFFFF);
-                    final String percentage = TextFormatting.GRAY + NovaEngUtils.formatPercent(this.usedMemory + this.usedExtraStorage, this.totalStorage);
+                    final String percentage = EnumChatFormatting.GRAY + NovaEngUtils.formatPercent(this.usedMemory + this.usedExtraStorage, this.totalStorage);
                     fr.drawStringWithShadow(percentage, 0, 10, 0xFFFFFF);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
 
                 // Threads
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(13, 30, 0);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(13, 30, 0);
                 {
                     final String threads = String.valueOf(this.threads);
                     final String hyperThreads = String.valueOf(this.hyperThreads);
@@ -124,55 +125,56 @@ public class MonitorPanel extends SizedRow {
                     final String maxHyperThreads = String.valueOf(this.maxHyperThreads);
                     final String formatted = String.format("%s (%s%s%s) / %s (%s%s%s)",
                             threads,
-                            TextFormatting.RED, hyperThreads, TextFormatting.RESET,
+                            EnumChatFormatting.RED, hyperThreads, EnumChatFormatting.RESET,
                             maxThreads,
-                            TextFormatting.YELLOW, maxHyperThreads, TextFormatting.RESET
+                            EnumChatFormatting.YELLOW, maxHyperThreads, EnumChatFormatting.RESET
                     );
 
                     fr.drawStringWithShadow(formatted, 0, 0, 0xFFFFFF);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
 
                 // CPU Usage
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(13, 43, 0);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(13, 43, 0);
                 {
                     final String cpuUsage = String.format("%d µs/t", this.cpuUsage);
                     fr.drawStringWithShadow(cpuUsage, 0, 0, 0xFFFFFF);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
 
                 // Energy
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(13, 56 + 1, 0);
-                GlStateManager.scale(.7F, .7F, .7F);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(13, 56 + 1, 0);
+                GL11.glScalef(.7F, .7F, .7F);
                 {
                     final String energyUsage = String.format("%s AE/t", NovaEngUtils.formatNumber(this.energyUsage));
                     fr.drawStringWithShadow(energyUsage, 0, 0, 0xFFFFFF);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
 
                 // Total Parallelism
-                GlStateManager.pushMatrix();
+                GL11.glPushMatrix();
                 if (this.totalParallelism >= 100_000) {
-                    GlStateManager.translate(53, 56 + 1, 0);
-                    GlStateManager.scale(.8F, .8F, .8F);
+                    GL11.glTranslatef(53, 56 + 1, 0);
+                    GL11.glScalef(.8F, .8F, .8F);
                 } else {
-                    GlStateManager.translate(53, 56, 0);
+                    GL11.glTranslatef(53, 56, 0);
                 }
                 {
                     final String totalParallelism = String.valueOf(this.totalParallelism);
                     fr.drawStringWithShadow(totalParallelism, 0, 0, 0xFFFFFF);
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
             }
-            GlStateManager.color(1F, 1F, 1F, 1F);
-            GlStateManager.popMatrix();
+            GL11.glColor4f(1F, 1F, 1F, 1F);
+            GL11.glPopMatrix();
         }
 
         @Override
         public boolean onGuiEvent(final GuiEvent event) {
-            if (event instanceof ECGUIDataUpdateEvent ecGUIEvent) {
+            if (event instanceof ECGUIDataUpdateEvent) {
+                ECGUIDataUpdateEvent ecGUIEvent = (ECGUIDataUpdateEvent) event;
                 GuiECalculatorController ecGui = ecGUIEvent.getECGui();
                 ECalculatorData data = ecGui.getData();
                 long totalStorage = data.totalStorage();
@@ -227,7 +229,8 @@ public class MonitorPanel extends SizedRow {
 
         @Override
         public boolean onGuiEvent(final GuiEvent event) {
-            if (event instanceof ECGUIDataUpdateEvent ecGUIEvent) {
+            if (event instanceof ECGUIDataUpdateEvent) {
+                ECGUIDataUpdateEvent ecGUIEvent = (ECGUIDataUpdateEvent) event;
                 final GuiECalculatorController ecGui = ecGUIEvent.getECGui();
                 final ECalculatorData data = ecGui.getData();
                 final List<DynamicWidget> widgets = getWidgets();
@@ -240,13 +243,17 @@ public class MonitorPanel extends SizedRow {
                     row.addWidget(new Task(ecpuData));
                     element++;
                     if (element >= maxElementPerRow) {
-                        widgets.add(row.setUseScissor(false));
+                        row.setUseScissor(false);
+                        widgets.add(row);
                         row = new Row();
                         element = 0;
                     }
                 }
-                row.getWidgets().forEach(widget -> widget.setMarginDown(3));
-                widgets.add(row.setUseScissor(false));
+                for (DynamicWidget widget : row.getWidgets()) {
+                    widget.setMarginDown(3);
+                }
+                row.setUseScissor(false);
+                widgets.add(row);
             }
             return super.onGuiEvent(event);
         }
@@ -281,7 +288,7 @@ public class MonitorPanel extends SizedRow {
                 this.usedMemory = ecpuData.usedMemory();
                 this.parallelismPreSecond = ecpuData.parallelismPreSecond();
                 this.cpuUsage = ecpuData.cpuUsagePerSecond();
-                addWidget(new SlotItemVirtualJEI(crafting.createItemStack()).setAbsXY(ITEM_OFFSET_X, ITEM_OFFSET_Y));
+                addWidget(new SlotItemVirtualJEI(crafting != null ? crafting.getItemStack() : null).setAbsXY(ITEM_OFFSET_X, ITEM_OFFSET_Y));
             }
 
             @Override
@@ -292,27 +299,27 @@ public class MonitorPanel extends SizedRow {
                 final String parallelism = parallelismPreSecond + "/t";
                 final String cpuUsage = this.cpuUsage + "µs/t";
 
-                final FontRenderer fr = gui.getGui().mc.fontRenderer;
+                final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
                 final float width = 38 / .8F;
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(renderPos.posX() + 24, renderPos.posY() + 2, 0);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(renderPos.posX() + 24, renderPos.posY() + 2, 0);
                 {
                     MEMORY_ICON.render(new RenderPos(0, 0), gui);
                     PARALLELISM_ICON.render(new RenderPos(0, 8), gui);
 
-                    GlStateManager.pushMatrix();
-                    GlStateManager.scale(.8F, .8F, .8F);
+                    GL11.glPushMatrix();
+                    GL11.glScalef(.8F, .8F, .8F);
                     {
                         float strWidth = fr.getStringWidth(memory);
-                        fr.drawStringWithShadow(memory, width - strWidth, 0, 0xFFFFFFFF);
+                        fr.drawStringWithShadow(memory, (int) (width - strWidth), 0, 0xFFFFFFFF);
                         strWidth = fr.getStringWidth(parallelism);
-                        fr.drawStringWithShadow(parallelism, width - strWidth, 10, 0xFFFFFFFF);
+                        fr.drawStringWithShadow(parallelism, (int) (width - strWidth), 10, 0xFFFFFFFF);
                         strWidth = fr.getStringWidth(cpuUsage);
-                        fr.drawStringWithShadow(cpuUsage, width - strWidth, 19, 0xFFFFFFFF);
+                        fr.drawStringWithShadow(cpuUsage, (int) (width - strWidth), 19, 0xFFFFFFFF);
                     }
-                    GlStateManager.popMatrix();
+                    GL11.glPopMatrix();
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
             }
 
         }

@@ -20,6 +20,12 @@ public abstract class WidgetContainer extends DynamicWidget {
         widgets.add(widget);
     }
 
+    public void addWidgets(DynamicWidget... widgets) {
+        for (DynamicWidget widget : widgets) {
+            addWidget(widget);
+        }
+    }
+
     @Override
     public void render(RenderPos renderPos, WidgetGui widgetGui) {
         for (DynamicWidget widget : widgets) {

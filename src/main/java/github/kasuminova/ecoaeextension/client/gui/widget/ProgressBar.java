@@ -28,8 +28,8 @@ public class ProgressBar extends DynamicWidget {
     protected Function<ProgressBar, List<String>> tooltipFunction = null;
 
     @Override
-    public void render(final WidgetGui widgetGui, final RenderSize renderSize, final RenderPos renderPos, final MousePos mousePos) {
-        GuiScreen gui = widgetGui.getGui();
+    public void render(final RenderPos renderPos, final WidgetGui widgetGui) {
+        GuiScreen gui = widgetGui.gui;
 
         // Background.
         if (backgroundTexture != null) {
@@ -52,21 +52,21 @@ public class ProgressBar extends DynamicWidget {
             if (leftToRight) {
                 // Left to right.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(Minecraft.getMinecraft().getTextureManager());
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(tex.texture);
                     gui.drawTexturedModalRect(
-                            renderPos.posX(), renderPos.posY(),
-                            tex.texX(), tex.texY(),
-                            (int) (tex.width() * renderPercent), tex.height()
+                            renderPos.x, renderPos.y,
+                            tex.u, tex.v,
+                            (int) (tex.width * renderPercent), tex.height
                     );
                 });
             } else {
                 // Right to left.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(Minecraft.getMinecraft().getTextureManager());
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(tex.texture);
                     gui.drawTexturedModalRect(
-                            renderPos.posX() + (int) (tex.width() * (1 - renderPercent)), renderPos.posY(),
-                            tex.texX(), tex.texY(),
-                            (int) (tex.width() * renderPercent), tex.height()
+                            renderPos.x + (int) (tex.width * (1 - renderPercent)), renderPos.y,
+                            tex.u, tex.v,
+                            (int) (tex.width * renderPercent), tex.height
                     );
                 });
             }
@@ -75,21 +75,21 @@ public class ProgressBar extends DynamicWidget {
             if (leftToRight) {
                 // Down to up.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(Minecraft.getMinecraft().getTextureManager());
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(tex.texture);
                     gui.drawTexturedModalRect(
-                            renderPos.posX(), renderPos.posY(),
-                            tex.texX(), tex.texY(),
-                            tex.width(), (int) (tex.height() * renderPercent)
+                            renderPos.x, renderPos.y,
+                            tex.u, tex.v,
+                            tex.width, (int) (tex.height * renderPercent)
                     );
                 });
             } else {
                 // Up to down.
                 findProgressForegroundTex(percent).ifPresent(tex -> {
-                    tex.bind(Minecraft.getMinecraft().getTextureManager());
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(tex.texture);
                     gui.drawTexturedModalRect(
-                            renderPos.posX(), renderPos.posY() + (int) (tex.height() * (1 - renderPercent)),
-                            tex.texX(), tex.texY() + (int) (tex.height() * (1 - renderPercent)),
-                            tex.width(), (int) (tex.height() * renderPercent)
+                            renderPos.x, renderPos.y + (int) (tex.height * (1 - renderPercent)),
+                            tex.u, tex.v + (int) (tex.height * (1 - renderPercent)),
+                            tex.width, (int) (tex.height * renderPercent)
                     );
                 });
             }
