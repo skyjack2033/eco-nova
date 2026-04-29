@@ -27,8 +27,7 @@ public class BlockECalculatorParallelProc extends BlockECalculatorPart {
     protected BlockECalculatorParallelProc(final String level, final int parallelism) {
         super(Material.iron);
         this.parallelism = parallelism;
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_parallel_proc_" + level));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "ecalculator_parallel_proc_" + level);
+        this.setUnlocalizedName(ECOAEExtension.MOD_ID + '.' + "ecalculator_parallel_proc_" + level);
     }
 
     public int getParallelism() {
@@ -57,7 +56,8 @@ public class BlockECalculatorParallelProc extends BlockECalculatorPart {
     @Override
     public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te instanceof ECalculatorPart part) {
+        if (te instanceof ECalculatorPart) {
+            ECalculatorPart part = (ECalculatorPart) te;
             if (part.getControllerLevel() != null) {
                 return 12;
             }

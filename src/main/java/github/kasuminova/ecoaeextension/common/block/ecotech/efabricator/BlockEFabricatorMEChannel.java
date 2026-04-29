@@ -1,25 +1,17 @@
 package github.kasuminova.ecoaeextension.common.block.ecotech.efabricator;
 
 import github.kasuminova.ecoaeextension.ECOAEExtension;
-import github.kasuminova.ecoaeextension.common.block.prop.FacingProp;
-import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.efabricator.EFabricatorMEChannel;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
-import net.minecraft.util.ResourceLocation;
-
-import github.kasuminova.ecoaeextension.common.util.BlockPos;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @SuppressWarnings("deprecation")
 public class BlockEFabricatorMEChannel extends BlockEFabricatorPart {
@@ -27,50 +19,27 @@ public class BlockEFabricatorMEChannel extends BlockEFabricatorPart {
     public static final BlockEFabricatorMEChannel INSTANCE = new BlockEFabricatorMEChannel();
 
     protected BlockEFabricatorMEChannel() {
-        super(Material.IRON);
-        this.setHardness(20.0F);
-        this.setResistance(2000.0F);
-        this.setSoundType(SoundType.METAL);
-        this.setHarvestLevel("pickaxe", 2);
-        this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
-        this.setDefaultState(this.blockState.getBaseState()
-                .withProperty(FacingProp.HORIZONTALS, ForgeDirection.NORTH)
-        );
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "efabricator_me_channel"));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "efabricator_me_channel");
+        super(Material.iron);
+        this.setBlockName(ECOAEExtension.MOD_ID + '.' + "efabricator_me_channel");
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(@Nonnull final World world, @Nonnull final IBlockState state) {
+    public TileEntity createNewTileEntity(@Nonnull final World worldIn, final int meta) {
         return new EFabricatorMEChannel();
     }
 
-    @Nullable
     @Override
-    public TileEntity createNewTileEntity(@Nonnull final World world, final int meta) {
-        return new EFabricatorMEChannel();
+    public void onBlockPlacedBy(@Nonnull final World worldIn,
+                                final int x,
+                                final int y,
+                                final int z,
+                                @Nonnull final EntityLivingBase placer,
+                                @Nonnull final ItemStack stack)
+    {
+        int facingMeta = MathHelper.floor_double((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        facingMeta = (facingMeta + 2) & 3;
+        worldIn.setBlockMetadataWithNotify(x, y, z, facingMeta, 2);
     }
 
-    @Nonnull
-    @Override
-    public IBlockState getStateFromMeta(final int meta) {
-        return getDefaultState().withProperty(FacingProp.HORIZONTALS, EnumFacingCompat.byHorizontalIndex(meta));
-    }
-
-    @Override
-    public int getMetaFromState(@Nonnull final IBlockState state) {
-        return state.getValue(FacingProp.HORIZONTALS).getHorizontalIndex();
-    }
-
-    @Nonnull
-    public IBlockState getStateForPlacement(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull ForgeDirection facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return this.getDefaultState().withProperty(FacingProp.HORIZONTALS, placer.getHorizontalFacing().getOpposite());
-    }
-
-    @Nonnull
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FacingProp.HORIZONTALS);
-    }
 }

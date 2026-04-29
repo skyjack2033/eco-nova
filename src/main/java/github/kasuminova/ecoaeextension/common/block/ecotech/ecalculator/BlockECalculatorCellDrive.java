@@ -24,8 +24,7 @@ public class BlockECalculatorCellDrive extends BlockECalculatorPart {
 
     protected BlockECalculatorCellDrive() {
         super(Material.iron);
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_cell_drive"));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "ecalculator_cell_drive");
+        this.setUnlocalizedName(ECOAEExtension.MOD_ID + '.' + "ecalculator_cell_drive");
     }
 
     @Nullable
@@ -50,12 +49,13 @@ public class BlockECalculatorCellDrive extends BlockECalculatorPart {
     @Override
     public void breakBlock(@Nonnull final World worldIn, final int x, final int y, final int z, @Nonnull final Block block, final int meta) {
         TileEntity te = worldIn.getTileEntity(x, y, z);
-        if (te instanceof ECalculatorCellDrive drive) {
+        if (te instanceof ECalculatorCellDrive) {
+            ECalculatorCellDrive drive = (ECalculatorCellDrive) te;
             AppEngInternalInventory inv = drive.getDriveInv();
             for (int i = 0; i < inv.getSlots(); i++) {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (stack != null && stack.stackSize > 0) {
-                    spawnAsEntity(worldIn, x, y, z, stack);
+                    dropBlockAsItem(worldIn, x, y, z, stack);
                     inv.setStackInSlot(i, null);
                 }
             }
@@ -67,7 +67,8 @@ public class BlockECalculatorCellDrive extends BlockECalculatorPart {
     @Override
     public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te instanceof ECalculatorCellDrive drive) {
+        if (te instanceof ECalculatorCellDrive) {
+            ECalculatorCellDrive drive = (ECalculatorCellDrive) te;
             boolean isOn = drive.getControllerLevel() != null;
             AppEngInternalInventory driveInv = drive.getDriveInv();
             ItemStack stack = driveInv.getStackInSlot(0);

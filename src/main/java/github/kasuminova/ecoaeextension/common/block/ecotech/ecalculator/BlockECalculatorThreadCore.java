@@ -1,7 +1,6 @@
 package github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator;
 
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import github.kasuminova.mmce.common.util.Sides;
 import github.kasuminova.ecoaeextension.ECOAEExtension;
 import github.kasuminova.ecoaeextension.common.item.ecalculator.ItemECalculatorThreadCore;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorThreadCore;
@@ -13,7 +12,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -35,12 +33,11 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
     protected final int hyperThreads;
     protected ItemECalculatorThreadCore item = null;
 
-    protected BlockECalculatorThreadCore(final ResourceLocation registryName, final String translationKey, final int threads, final int hyperThreads) {
+    protected BlockECalculatorThreadCore(final String unlocalizedName, final int threads, final int hyperThreads) {
         super(Material.iron);
         this.threads = threads;
         this.hyperThreads = hyperThreads;
-        this.setRegistryName(registryName);
-        this.setTranslationKey(translationKey);
+        this.setUnlocalizedName(unlocalizedName);
     }
 
     public ItemECalculatorThreadCore getItem() {
@@ -61,11 +58,7 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
     }
 
     protected BlockECalculatorThreadCore(final String level, final int threads, final int hyperThreads) {
-        this(
-                new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_thread_core_" + level),
-                ECOAEExtension.MOD_ID + '.' + "ecalculator_thread_core_" + level,
-                threads, hyperThreads
-        );
+        this(ECOAEExtension.MOD_ID + '.' + "ecalculator_thread_core_" + level, threads, hyperThreads);
     }
 
     @Nullable
@@ -83,19 +76,20 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
         TileEntity te = worldIn.getTileEntity(x, y, z);
         ItemStack dropped = new ItemStack(item);
 
-        if (te == null || Sides.isRunningOnClient()) {
-            spawnAsEntity(worldIn, x, y, z, dropped);
+        if (te == null || worldIn.isRemote) {
+            dropBlockAsItem(worldIn, x, y, z, dropped);
             worldIn.removeTileEntity(x, y, z);
             return;
         }
-        if (!(te instanceof ECalculatorThreadCore threadCore)) {
-            spawnAsEntity(worldIn, x, y, z, dropped);
+        if (!(te instanceof ECalculatorThreadCore)) {
+            dropBlockAsItem(worldIn, x, y, z, dropped);
             worldIn.removeTileEntity(x, y, z);
             return;
         }
+        ECalculatorThreadCore threadCore = (ECalculatorThreadCore) te;
         final List<CraftingCPUCluster> cpus = threadCore.getCpus();
         if (cpus.isEmpty()) {
-            spawnAsEntity(worldIn, x, y, z, dropped);
+            dropBlockAsItem(worldIn, x, y, z, dropped);
             worldIn.removeTileEntity(x, y, z);
             return;
         }
@@ -108,7 +102,7 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
             CompressedStreamTools.writeCompressed(tag, bos);
         } catch (IOException e) {
             ECOAEExtension.log.error("Failed to write CPU NBT to byte array!", e);
-            spawnAsEntity(worldIn, x, y, z, dropped);
+            dropBlockAsItem(worldIn, x, y, z, dropped);
             worldIn.removeTileEntity(x, y, z);
             return;
         } finally {
@@ -126,7 +120,7 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
             ECOAEExtension.log.error("Failed to close byte array streams!", e);
         }
 
-        spawnAsEntity(worldIn, x, y, z, dropped);
+        dropBlockAsItem(worldIn, x, y, z, dropped);
         worldIn.removeTileEntity(x, y, z);
     }
 
@@ -144,7 +138,8 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
 
         TileEntity te = worldIn.getTileEntity(x, y, z);
         NBTTagCompound tag = stack.getTagCompound();
-        if (te instanceof ECalculatorThreadCore threadCore && tag != null && tag.hasKey("compressedCpuNBT")) {
+        if (te instanceof ECalculatorThreadCore && tag != null && tag.hasKey("compressedCpuNBT")) {
+            ECalculatorThreadCore threadCore = (ECalculatorThreadCore) te;
             byte[] cpuNBTBytes = tag.getByteArray("compressedCpuNBT");
             if (cpuNBTBytes.length == 0) {
                 return;
@@ -161,7 +156,8 @@ public class BlockECalculatorThreadCore extends BlockECalculatorPart {
     @Override
     public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te instanceof ECalculatorThreadCore threadCore) {
+        if (te instanceof ECalculatorThreadCore) {
+            ECalculatorThreadCore threadCore = (ECalculatorThreadCore) te;
             if (threadCore.getControllerLevel() != null) {
                 if (threadCore.getThreads() > 0) {
                     return 15;

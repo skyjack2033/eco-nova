@@ -4,7 +4,6 @@ import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
 import net.minecraft.block.Block;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 
 
@@ -15,21 +14,20 @@ import javax.annotation.Nonnull;
 public abstract class BlockEFabricator extends Block {
 
     protected BlockEFabricator() {
-        super(Material.IRON);
+        super(Material.iron);
         this.setHardness(20.0F);
         this.setResistance(2000.0F);
-        this.setSoundType(SoundType.METAL);
+        this.setStepSound(Block.soundTypeMetal);
         this.setHarvestLevel("pickaxe", 2);
         this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
     }
 
     @Override
-    public boolean isOpaqueCube(@Nonnull final IBlockState state) {
+    public boolean isOpaqueCube() {
         return false;
     }
 
-    @Override
-    public boolean canEntitySpawn(@Nonnull final IBlockState state, @Nonnull final Entity entityIn) {
+    public boolean canEntitySpawn(@Nonnull final Entity entityIn) {
         return false;
     }
 

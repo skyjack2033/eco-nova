@@ -16,8 +16,7 @@ public class BlockECalculatorMEChannel extends BlockECalculatorPart {
 
     protected BlockECalculatorMEChannel() {
         super(Material.iron);
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_me_channel"));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "ecalculator_me_channel");
+        this.setUnlocalizedName(ECOAEExtension.MOD_ID + '.' + "ecalculator_me_channel");
     }
 
     @Nullable

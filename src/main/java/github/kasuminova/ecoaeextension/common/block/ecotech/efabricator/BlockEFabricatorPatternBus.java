@@ -3,28 +3,20 @@ package github.kasuminova.ecoaeextension.common.block.ecotech.efabricator;
 import appeng.tile.inventory.AppEngInternalInventory;
 import github.kasuminova.ecoaeextension.ECOAEExtension;
 import github.kasuminova.ecoaeextension.common.CommonProxy;
-import github.kasuminova.ecoaeextension.common.block.prop.FacingProp;
-import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.efabricator.EFabricatorPatternBus;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
-
-import net.minecraft.util.ResourceLocation;
-
-import github.kasuminova.ecoaeextension.common.util.BlockPos;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @SuppressWarnings("deprecation")
 public class BlockEFabricatorPatternBus extends BlockEFabricatorPart {
@@ -32,83 +24,59 @@ public class BlockEFabricatorPatternBus extends BlockEFabricatorPart {
     public static final BlockEFabricatorPatternBus INSTANCE = new BlockEFabricatorPatternBus();
 
     protected BlockEFabricatorPatternBus() {
-        super(Material.IRON);
-        this.setHardness(20.0F);
-        this.setResistance(2000.0F);
-        this.setSoundType(SoundType.METAL);
-        this.setHarvestLevel("pickaxe", 2);
-        this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
-        this.setDefaultState(this.blockState.getBaseState()
-                .withProperty(FacingProp.HORIZONTALS, ForgeDirection.NORTH)
-        );
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "efabricator_pattern_bus"));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "efabricator_pattern_bus");
+        super(Material.iron);
+        this.setBlockName(ECOAEExtension.MOD_ID + '.' + "efabricator_pattern_bus");
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(@Nonnull final World world, @Nonnull final IBlockState state) {
-        return new EFabricatorPatternBus();
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createNewTileEntity(@Nonnull final World world, final int meta) {
+    public TileEntity createNewTileEntity(@Nonnull final World worldIn, final int meta) {
         return new EFabricatorPatternBus();
     }
 
     @Override
-    public int getLightValue(@Nonnull final IBlockState state) {
+    public void onBlockPlacedBy(@Nonnull final World worldIn,
+                                final int x,
+                                final int y,
+                                final int z,
+                                @Nonnull final EntityLivingBase placer,
+                                @Nonnull final ItemStack stack)
+    {
+        int facingMeta = MathHelper.floor_double((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        facingMeta = (facingMeta + 2) & 3;
+        worldIn.setBlockMetadataWithNotify(x, y, z, facingMeta, 2);
+    }
+
+    @Override
+    public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
         return 10;
     }
 
     @Override
-    public boolean onBlockActivated(final World worldIn, @Nonnull final BlockPos pos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer playerIn, @Nonnull final ForgeDirection facing, final float hitX, final float hitY, final float hitZ) {
+    public boolean onBlockActivated(final World worldIn, final int x, final int y, final int z, @Nonnull final EntityPlayer playerIn, final int side, final float hitX, final float hitY, final float hitZ) {
         if (!worldIn.isRemote) {
-            TileEntity te = worldIn.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+            TileEntity te = worldIn.getTileEntity(x, y, z);
             if (te instanceof EFabricatorPatternBus) {
-                playerIn.openGui(ECOAEExtension.MOD_ID, CommonProxy.GuiType.EFABRICATOR_PATTERN_BUS.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
+                playerIn.openGui(ECOAEExtension.MOD_ID, CommonProxy.GuiType.EFABRICATOR_PATTERN_BUS.ordinal(), worldIn, x, y, z);
             }
         }
         return true;
     }
 
     @Override
-    public void breakBlock(World worldIn, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-        TileEntity te = worldIn.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+    public void breakBlock(World worldIn, int x, int y, int z, Block block, int meta) {
+        TileEntity te = worldIn.getTileEntity(x, y, z);
         if (te instanceof EFabricatorPatternBus terminal) {
             AppEngInternalInventory inv = terminal.getPatterns();
             for (int i = 0; i < inv.getSlots(); i++) {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (stack != null && stack.stackSize > 0) {
-                    spawnAsEntity(worldIn, pos, stack);
-                    inv.setStackInSlot(i, null);
+                    dropBlockAsItem(worldIn, x, y, z, stack);
+                    inv.setInventorySlotContents(i, null);
                 }
             }
         }
-        super.breakBlock(worldIn, pos, state);
-    }
-
-    @Nonnull
-    @Override
-    public IBlockState getStateFromMeta(final int meta) {
-        return getDefaultState().withProperty(FacingProp.HORIZONTALS, EnumFacingCompat.byHorizontalIndex(meta));
-    }
-
-    @Override
-    public int getMetaFromState(@Nonnull final IBlockState state) {
-        return state.getValue(FacingProp.HORIZONTALS).getHorizontalIndex();
-    }
-
-    @Nonnull
-    public IBlockState getStateForPlacement(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull ForgeDirection facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return this.getDefaultState().withProperty(FacingProp.HORIZONTALS, placer.getHorizontalFacing().getOpposite());
-    }
-
-    @Nonnull
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FacingProp.HORIZONTALS);
+        super.breakBlock(worldIn, x, y, z, block, meta);
     }
 
 }

@@ -1,17 +1,24 @@
 package github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator;
 
 import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
+import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-
-
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("deprecation")
 public abstract class BlockECalculatorPart extends BlockContainer {
+
+    protected final BlockStateContainer stateContainer;
+    protected IBlockState defaultState;
 
     protected BlockECalculatorPart(final Material materialIn) {
         super(materialIn);
@@ -21,6 +28,8 @@ public abstract class BlockECalculatorPart extends BlockContainer {
         this.setResistance(2000.0F);
         this.setStepSound(Block.soundTypeMetal);
         this.setHarvestLevel("pickaxe", 2);
+        this.stateContainer = this.createBlockState();
+        this.defaultState = this.stateContainer.getBaseState();
     }
 
     @Override
@@ -35,6 +44,24 @@ public abstract class BlockECalculatorPart extends BlockContainer {
 
     public boolean canEntitySpawn(@Nonnull final Entity entityIn) {
         return false;
+    }
+
+    // IBlockState support (not overrides - Block doesn't have these in 1.7.10)
+    public BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this);
+    }
+
+    public IBlockState getDefaultState() {
+        return defaultState;
+    }
+
+    public void setDefaultState(IBlockState state) {
+        this.defaultState = state;
+    }
+
+    public static ForgeDirection getHorizontalFacingFromEntity(EntityLivingBase entity) {
+        int dir = MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+        return EnumFacingCompat.byHorizontalIndex(dir);
     }
 
 }

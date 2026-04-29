@@ -23,4 +23,14 @@ public final class EnumFacingCompat {
             default: return ForgeDirection.NORTH;
         }
     }
+
+    public static int toHorizontalIndex(ForgeDirection dir) {
+        switch (dir) {
+            case SOUTH: return 0;
+            case WEST: return 1;
+            case NORTH: return 2;
+            case EAST: return 3;
+            default: return 2; // NORTH
+        }
+    }
 }

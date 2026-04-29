@@ -1,22 +1,14 @@
 package github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator;
 
 import github.kasuminova.ecoaeextension.ECOAEExtension;
-import github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator.prop.TransmitterBusLink;
-import github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator.prop.TransmitterBusLinkLevel;
-import github.kasuminova.ecoaeextension.common.block.prop.FacingProp;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorTransmitterBus;
+import github.kasuminova.ecoaeextension.common.util.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
-import net.minecraft.util.ResourceLocation;
-
-import github.kasuminova.ecoaeextension.common.util.BlockPos;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -29,14 +21,8 @@ public class BlockECalculatorTransmitterBus extends BlockECalculatorPart {
     public static final BlockECalculatorTransmitterBus INSTANCE = new BlockECalculatorTransmitterBus();
 
     protected BlockECalculatorTransmitterBus() {
-        super(Material.IRON);
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_transmitter_bus"));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "ecalculator_transmitter_bus");
-        this.setDefaultState(this.blockState.getBaseState()
-                .withProperty(FacingProp.HORIZONTALS, ForgeDirection.NORTH)
-                .withProperty(TransmitterBusLink.LINK, TransmitterBusLink.NONE)
-                .withProperty(TransmitterBusLinkLevel.LINK_LEVEL, TransmitterBusLinkLevel.NONE)
-        );
+        super(Material.iron);
+        this.setBlockName(ECOAEExtension.MOD_ID + '.' + "ecalculator_transmitter_bus");
     }
 
     @Nullable
@@ -45,73 +31,38 @@ public class BlockECalculatorTransmitterBus extends BlockECalculatorPart {
         return new ECalculatorTransmitterBus();
     }
 
-    @Nullable
     @Override
-    public TileEntity createTileEntity(@Nonnull final World world, @Nonnull final IBlockState state) {
-        return new ECalculatorTransmitterBus();
-    }
-
-    @Override
-    public void neighborChanged(@Nonnull final IBlockState state, @Nonnull final World worldIn, @Nonnull final BlockPos pos, @Nonnull final Block blockIn, @Nonnull final BlockPos fromPos) {
-        TileEntity te = worldIn.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+    public void onNeighborBlockChange(World worldIn, int x, int y, int z, Block neighborBlock) {
+        TileEntity te = worldIn.getTileEntity(x, y, z);
         if (te instanceof ECalculatorTransmitterBus bus) {
-            bus.neighborChanged(fromPos);
+            bus.neighborChanged(new BlockPos(x, y, z));
         }
-        super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
-    }
-
-    @Nonnull
-    @Override
-    public IBlockState getActualState(@Nonnull final IBlockState state, @Nonnull final IBlockAccess world, @Nonnull final BlockPos pos) {
-        TileEntity te = world.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
-        if (!(te instanceof ECalculatorTransmitterBus bus)) {
-            return state;
-        }
-
-        final IBlockState newState = state.withProperty(TransmitterBusLinkLevel.LINK_LEVEL, bus.getLinkLevel());
-        if (bus.isAllConnected()) {
-            return newState.withProperty(TransmitterBusLink.LINK, TransmitterBusLink.ALL);
-        } else if (bus.isUpConnected()) {
-            return newState.withProperty(TransmitterBusLink.LINK, TransmitterBusLink.UP);
-        } else if (bus.isDownConnected()) {
-            return newState.withProperty(TransmitterBusLink.LINK, TransmitterBusLink.DOWN);
-        }
-
-        return newState;
     }
 
     @Override
-    public int getLightValue(@Nonnull final IBlockState state) {
-        TransmitterBusLink link = state.getValue(TransmitterBusLink.LINK);
-        if (link == TransmitterBusLink.ALL) {
-            return 12;
-        }
-        if (link == TransmitterBusLink.UP || link == TransmitterBusLink.DOWN) {
-            return 8;
+    public void onBlockPlacedBy(@Nonnull final World worldIn,
+                                final int x,
+                                final int y,
+                                final int z,
+                                @Nonnull final EntityLivingBase placer,
+                                @Nonnull final ItemStack stack)
+    {
+        int facingMeta = MathHelper.floor_double((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        facingMeta = (facingMeta + 2) & 3;
+        worldIn.setBlockMetadataWithNotify(x, y, z, facingMeta, 2);
+    }
+
+    @Override
+    public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof ECalculatorTransmitterBus bus) {
+            if (bus.isAllConnected()) {
+                return 12;
+            } else if (bus.isUpConnected() || bus.isDownConnected()) {
+                return 8;
+            }
         }
         return 4;
-    }
-
-    @Nonnull
-    @Override
-    public IBlockState getStateFromMeta(final int meta) {
-        return getDefaultState().withProperty(FacingProp.HORIZONTALS, EnumFacingCompat.byHorizontalIndex(meta));
-    }
-
-    @Override
-    public int getMetaFromState(@Nonnull final IBlockState state) {
-        return state.getValue(FacingProp.HORIZONTALS).getHorizontalIndex();
-    }
-
-    @Nonnull
-    public IBlockState getStateForPlacement(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull ForgeDirection facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return this.getDefaultState().withProperty(FacingProp.HORIZONTALS, placer.getHorizontalFacing().getOpposite());
-    }
-
-    @Nonnull
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FacingProp.HORIZONTALS, TransmitterBusLink.LINK, TransmitterBusLinkLevel.LINK_LEVEL);
     }
 
 }

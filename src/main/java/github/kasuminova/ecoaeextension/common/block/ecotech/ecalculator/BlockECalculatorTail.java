@@ -24,8 +24,7 @@ public class BlockECalculatorTail extends BlockECalculatorPart {
 
     protected BlockECalculatorTail(final String level) {
         super(Material.iron);
-        this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_tail_" + level));
-        this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "ecalculator_tail_" + level);
+        this.setUnlocalizedName(ECOAEExtension.MOD_ID + '.' + "ecalculator_tail_" + level);
     }
 
     @Nullable
@@ -50,7 +49,8 @@ public class BlockECalculatorTail extends BlockECalculatorPart {
     @Override
     public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te instanceof ECalculatorPart part) {
+        if (te instanceof ECalculatorPart) {
+            ECalculatorPart part = (ECalculatorPart) te;
             if (part.getControllerLevel() != null) {
                 return 10;
             }
