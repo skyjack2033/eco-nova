@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class AbstractPartEncoder implements IGridProxyable {
 
 
-    public IGridNode getGridNode(AEPartLocation dir) {
+    public IGridNode getGridNode(ForgeDirection dir) {
         return null;
     }
 

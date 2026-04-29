@@ -4,7 +4,6 @@ import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
 import net.minecraft.block.BlockContainer;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 
 
@@ -16,13 +15,11 @@ public abstract class BlockECalculatorPart extends BlockContainer {
 
     protected BlockECalculatorPart(final Material materialIn) {
         super(materialIn);
-        this.translucent = true;
-        this.fullBlock = false;
         this.lightOpacity = 0;
         this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
         this.setHardness(20.0F);
         this.setResistance(2000.0F);
-        this.setSoundType(SoundType.METAL);
+        this.setStepSound(Block.soundTypeMetal);
         this.setHarvestLevel("pickaxe", 2);
     }
 
@@ -32,12 +29,11 @@ public abstract class BlockECalculatorPart extends BlockContainer {
     }
 
     @Override
-    public boolean isOpaqueCube(@Nonnull final IBlockState state) {
+    public boolean isOpaqueCube() {
         return false;
     }
 
-    @Override
-    public boolean canEntitySpawn(@Nonnull final IBlockState state, @Nonnull final Entity entityIn) {
+    public boolean canEntitySpawn(@Nonnull final Entity entityIn) {
         return false;
     }
 

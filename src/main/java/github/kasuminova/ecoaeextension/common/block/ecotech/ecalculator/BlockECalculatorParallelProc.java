@@ -1,22 +1,14 @@
 package github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator;
 
 import github.kasuminova.ecoaeextension.ECOAEExtension;
-import github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator.prop.Levels;
-import github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator.prop.ParallelProcStatus;
-import github.kasuminova.ecoaeextension.common.block.prop.FacingProp;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorParallelProc;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorPart;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-
-import github.kasuminova.ecoaeextension.common.util.BlockPos;
-import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -33,14 +25,10 @@ public class BlockECalculatorParallelProc extends BlockECalculatorPart {
     protected final int parallelism;
 
     protected BlockECalculatorParallelProc(final String level, final int parallelism) {
-        super(Material.IRON);
+        super(Material.iron);
         this.parallelism = parallelism;
         this.setRegistryName(new ResourceLocation(ECOAEExtension.MOD_ID, "ecalculator_parallel_proc_" + level));
         this.setTranslationKey(ECOAEExtension.MOD_ID + '.' + "ecalculator_parallel_proc_" + level);
-        this.setDefaultState(this.blockState.getBaseState()
-                .withProperty(FacingProp.HORIZONTALS, ForgeDirection.NORTH)
-                .withProperty(ParallelProcStatus.STATUS, ParallelProcStatus.OFF)
-        );
     }
 
     public int getParallelism() {
@@ -53,56 +41,28 @@ public class BlockECalculatorParallelProc extends BlockECalculatorPart {
         return new ECalculatorParallelProc();
     }
 
-    @Nullable
     @Override
-    public TileEntity createTileEntity(@Nonnull final World world, @Nonnull final IBlockState state) {
-        return new ECalculatorParallelProc();
-    }
-
-    @Nonnull
-    @Override
-    public IBlockState getActualState(@Nonnull final IBlockState state, @Nonnull final IBlockAccess world, @Nonnull final BlockPos pos) {
-        TileEntity te = world.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
-        if (!(te instanceof ECalculatorPart part)) {
-            return state;
-        }
-
-        Levels level = part.getControllerLevel();
-        if (level == null) {
-            return state;
-        }
-
-        return state.withProperty(ParallelProcStatus.STATUS, ParallelProcStatus.ON);
+    public void onBlockPlacedBy(@Nonnull final World worldIn,
+                                final int x,
+                                final int y,
+                                final int z,
+                                @Nonnull final EntityLivingBase placer,
+                                @Nonnull final ItemStack stack)
+    {
+        int facingMeta = MathHelper.floor_double((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        facingMeta = (facingMeta + 2) & 3;
+        worldIn.setBlockMetadataWithNotify(x, y, z, facingMeta, 2);
     }
 
     @Override
-    public int getLightValue(@Nonnull final IBlockState state) {
-        if (state.getValue(ParallelProcStatus.STATUS) == ParallelProcStatus.ON) {
-            return 12;
+    public int getLightValue(@Nonnull final IBlockAccess world, final int x, final int y, final int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof ECalculatorPart part) {
+            if (part.getControllerLevel() != null) {
+                return 12;
+            }
         }
         return 6;
-    }
-
-    @Nonnull
-    @Override
-    public IBlockState getStateFromMeta(final int meta) {
-        return getDefaultState().withProperty(FacingProp.HORIZONTALS, EnumFacingCompat.byHorizontalIndex(meta));
-    }
-
-    @Override
-    public int getMetaFromState(@Nonnull final IBlockState state) {
-        return state.getValue(FacingProp.HORIZONTALS).getHorizontalIndex();
-    }
-
-    @Nonnull
-    public IBlockState getStateForPlacement(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull ForgeDirection facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        return this.getDefaultState().withProperty(FacingProp.HORIZONTALS, placer.getHorizontalFacing().getOpposite());
-    }
-
-    @Nonnull
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FacingProp.HORIZONTALS, ParallelProcStatus.STATUS);
     }
 
 }

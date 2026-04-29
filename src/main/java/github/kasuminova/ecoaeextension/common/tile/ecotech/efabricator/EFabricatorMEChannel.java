@@ -44,7 +44,6 @@ public class EFabricatorMEChannel extends EFabricatorPart implements ICraftingPr
     protected final AENetworkProxy proxy = new AENetworkProxy(this, "channel", getVisualItemStack(), true);
 
     public AECableType getCableConnectionType(ForgeDirection dir) { return AECableType.SMART; }
-    public IGridNode getGridNode(ForgeDirection dir) { return null; }
     protected final IActionSource source = new MachineSource(this);
 
     private boolean wasActive = false;
