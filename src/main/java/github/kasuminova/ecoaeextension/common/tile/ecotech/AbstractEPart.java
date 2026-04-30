@@ -10,16 +10,18 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractEPart<C extends EPartController<?>> extends TileEntitySynchronized implements EPart<C> {
+public abstract class AbstractEPart<C> extends TileEntitySynchronized implements EPart<C> {
 
     protected C partController = null;
     protected boolean loaded = false;
 
-    public void setController(final EPartController<?> storageController) {
-        this.partController = (C) storageController;
+    @Override
+    public void setController(final C controller) {
+        this.partController = controller;
     }
 
     @Nullable
+    @Override
     public C getController() {
         return partController;
     }
@@ -40,17 +42,21 @@ public abstract class AbstractEPart<C extends EPartController<?>> extends TileEn
     public void onChunkUnload() {
         loaded = false;
         super.onChunkUnload();
-        if (partController != null) {
-            partController.disassemble();
-        }
+        callDisassemble(partController);
     }
 
     @Override
     public void invalidate() {
         loaded = false;
         super.invalidate();
-        if (partController != null) {
-            partController.disassemble();
+        callDisassemble(partController);
+    }
+
+    private static void callDisassemble(Object controller) {
+        if (controller instanceof EPartController) {
+            ((EPartController<?>) controller).disassemble();
+        } else if (controller instanceof NovaPartController) {
+            ((NovaPartController<?>) controller).disassemble();
         }
     }
 

@@ -2,9 +2,9 @@ package github.kasuminova.ecoaeextension.common.tile.ecotech;
 
 import javax.annotation.Nullable;
 
-public interface EPart<C extends EPartController<?>> {
+public interface EPart<C> {
 
-    void setController(final EPartController<?> storageController);
+    void setController(final C controller);
 
     @Nullable
     C getController();

@@ -1,7 +1,6 @@
 package github.kasuminova.ecoaeextension.common.util;
 
 import github.kasuminova.ecoaeextension.common.tile.ecotech.EPart;
-import github.kasuminova.ecoaeextension.common.tile.ecotech.EPartController;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
@@ -32,9 +31,10 @@ public class EPartMap<P extends EPart<?>> {
         parts.values().stream().flatMap(Collection::stream).forEach(consumer);
     }
 
-    public void assemble(final EPartController<P> controller) {
+    /** Accept any controller type — both old EPartController and new NovaPartController. */
+    public void assemble(final Object controller) {
         forEachPart(part -> {
-            part.setController(controller);
+            ((EPart) part).setController(controller);
             part.onAssembled();
         });
     }

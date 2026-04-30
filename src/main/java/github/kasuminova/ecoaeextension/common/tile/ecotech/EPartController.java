@@ -78,7 +78,7 @@ public abstract class EPartController<P extends EPart<?>> extends TileCustomCont
             }
             try {
                 P part = (P) te;
-                part.setController(this);
+                ((EPart) part).setController(this);
                 parts.addPart(part);
                 onAddPart(part);
             } catch (ClassCastException e) {
