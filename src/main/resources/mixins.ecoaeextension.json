@@ -16,11 +16,6 @@
     "AccessorAbstractCellInventory",
     "AccessorCellRegistry",
     "AccessorContainerPatternEncoder",
-    "MixinCraftingCPUCluster",
-    "MixinCraftingCPUClusterTwo",
-    "MixinCraftingCPUClusterTwo$AccessorTaskProgress",
-    "MixinCraftingCPUStatus",
-    "MixinCraftingGridCache",
     "MixinTileChestFilter",
     "MixinTileDriveFilter"
   ]
