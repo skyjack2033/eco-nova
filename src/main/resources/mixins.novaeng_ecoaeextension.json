@@ -1,15 +1,15 @@
 {
-  "package": "github.kasuminova.ecoaeextension.mixin.mmce",
+  "required": true,
+  "minVersion": "0.8",
+  "package": "github.kasuminova.ecoaeextension.mixin.ae2",
   "refmap": "mixins.novaeng_ecoaeextension.refmap.json",
   "target": "@env(DEFAULT)",
-  "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
-  "client": [
-    "MixinIngredientItemStackRenderer"
-  ],
+  "client": [],
+  "server": [],
   "mixins": [
-    "MixinMachineRegistry",
-    "MixinMEPatternProvider",
-    "MixinTaskExecutor"
+    "AccessorCellRegistry",
+    "MixinTileChestFilter",
+    "MixinTileDriveFilter"
   ]
 }

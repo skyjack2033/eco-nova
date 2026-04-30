@@ -1,13 +1,18 @@
 package github.kasuminova.ecoaeextension.common.block.ecotech.efabricator;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import github.kasuminova.ecoaeextension.ECOAEExtension;
 import github.kasuminova.ecoaeextension.common.core.CreativeTabNovaEng;
 import github.kasuminova.ecoaeextension.common.util.EnumFacingCompat;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -16,6 +21,7 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("deprecation")
 public abstract class BlockEFabricator extends Block {
 
+    protected IIcon blockIcon;
     protected final BlockStateContainer stateContainer;
     protected IBlockState defaultState;
 
@@ -28,6 +34,19 @@ public abstract class BlockEFabricator extends Block {
         this.setCreativeTab(CreativeTabNovaEng.INSTANCE);
         this.stateContainer = this.createBlockState();
         this.defaultState = this.stateContainer.getBaseState();
+        setBlockTextureName(ECOAEExtension.MOD_ID + ":carbon_fiber_chassis");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister register) {
+        this.blockIcon = register.registerIcon(getTextureName());
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        return this.blockIcon;
     }
 
     @Override

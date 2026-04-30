@@ -17,8 +17,6 @@ public class ECOAEExtensionLateMixinLoader implements ILateMixinLoader {
 
     static {
         addMixinCFG("mixins.novaeng_ecoaeextension.json");
-        addModdedMixinCFG("mixins.novaeng_ecoaeextension_ae2.json", "appliedenergistics2");
-        addModdedMixinCFG("mixins.novaeng_ecoaeextension_nae2.json", "nae2");
     }
 
     @Override

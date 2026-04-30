@@ -1,7 +1,12 @@
 package github.kasuminova.ecoaeextension.common;
 
 import appeng.api.AEApi;
-import appeng.api.storage.ICellHandler;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.me.helpers.IGridProxyable;
 import github.kasuminova.ecoaeextension.ECOAEExtension;
 import github.kasuminova.ecoaeextension.common.container.*;
 import github.kasuminova.ecoaeextension.common.data.ModDataHolder;
@@ -9,6 +14,7 @@ import github.kasuminova.ecoaeextension.common.estorage.EStorageCellHandler;
 import github.kasuminova.ecoaeextension.common.handler.ECalculatorEventHandler;
 import github.kasuminova.ecoaeextension.common.handler.EFabricatorEventHandler;
 import github.kasuminova.ecoaeextension.common.handler.EStorageEventHandler;
+import github.kasuminova.ecoaeextension.common.registry.RecipeRegistry;
 import github.kasuminova.ecoaeextension.common.registry.RegistryBlocks;
 import github.kasuminova.ecoaeextension.common.registry.RegistryItems;
 import github.kasuminova.ecoaeextension.common.tile.ecotech.ecalculator.ECalculatorController;
@@ -55,6 +61,7 @@ public class CommonProxy implements IGuiHandler {
     }
 
     public void init() {
+        RecipeRegistry.registerRecipes();
         if (AEApi.instance() != null) {
             AEApi.instance().registries().cell().addCellHandler(EStorageCellHandler.INSTANCE);
         }
@@ -83,14 +90,14 @@ public class CommonProxy implements IGuiHandler {
                 return new ContainerEStorageController((EStorageController) present, player);
             case EFABRICATOR_CONTROLLER: {
                 EFabricatorController efController = (EFabricatorController) present;
-                if (efController.getChannel() != null && !checkSecurity(player, efController)) {
+                if (efController.getChannel() != null && !checkSecurity(player, efController.getChannel())) {
                     return null;
                 }
                 return new ContainerEFabricatorController(efController, player);
             }
             case EFABRICATOR_PATTERN_SEARCH: {
                 EFabricatorController efController = (EFabricatorController) present;
-                if (efController.getChannel() != null && !checkSecurity(player, efController)) {
+                if (efController.getChannel() != null && !checkSecurity(player, efController.getChannel())) {
                     return null;
                 }
                 return new ContainerEFabricatorPatternSearch(efController, player);
@@ -98,14 +105,14 @@ public class CommonProxy implements IGuiHandler {
             case EFABRICATOR_PATTERN_BUS: {
                 EFabricatorPatternBus efPatternBus = (EFabricatorPatternBus) present;
                 EFabricatorController efController = efPatternBus.getController();
-                if (efController != null && efController.getChannel() != null && !checkSecurity(player, efController)) {
+                if (efController != null && efController.getChannel() != null && !checkSecurity(player, efController.getChannel())) {
                     return null;
                 }
                 return new ContainerEFabricatorPatternBus(efPatternBus, player);
             }
             case ECALCULATOR_CONTROLLER: {
                 ECalculatorController ecController = (ECalculatorController) present;
-                if (ecController.getChannel() != null && !checkSecurity(player, ecController)) {
+                if (ecController.getChannel() != null && !checkSecurity(player, ecController.getChannel())) {
                     return null;
                 }
                 return new ContainerECalculatorController((ECalculatorController) present, player);
@@ -114,9 +121,17 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
-    private boolean checkSecurity(EntityPlayer player, TileEntity te) {
-        // TODO: Implement proper AE2 security check for 1.7.10
-        return false;
+    private boolean checkSecurity(EntityPlayer player, IGridProxyable proxyable) {
+        if (proxyable == null || proxyable.getProxy() == null) return true;
+        IGridNode node = proxyable.getProxy().getNode();
+        if (node == null) return true;
+        IGrid grid = node.getGrid();
+        if (grid == null) return true;
+        IEnergyGrid eg = grid.getCache(IEnergyGrid.class);
+        if (eg != null && !eg.isNetworkPowered()) return true;
+        ISecurityGrid sg = grid.getCache(ISecurityGrid.class);
+        if (sg == null) return true;
+        return sg.hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @Override
