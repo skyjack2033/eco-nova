@@ -43,6 +43,10 @@ public class CommonProxy implements IGuiHandler {
     }
 
     public void preInit() {
+        RegistryBlocks.registerBlocks();
+        RegistryBlocks.registerTileEntities();
+        RegistryItems.registerItems();
+
         NetworkRegistry.INSTANCE.registerGuiHandler(ECOAEExtension.instance, this);
 
         MinecraftForge.EVENT_BUS.register(EStorageEventHandler.INSTANCE);

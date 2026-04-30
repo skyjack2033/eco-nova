@@ -1,6 +1,5 @@
 package github.kasuminova.ecoaeextension.common.registry;
 
-import github.kasuminova.ecoaeextension.ECOAEExtension;
 import github.kasuminova.ecoaeextension.common.block.ecotech.ecalculator.*;
 import github.kasuminova.ecoaeextension.common.block.ecotech.efabricator.*;
 import github.kasuminova.ecoaeextension.common.block.ecotech.estorage.*;
@@ -20,86 +19,69 @@ import hellfirepvp.modularmachinery.common.block.BlockMachineComponent;
 import hellfirepvp.modularmachinery.common.item.ItemBlockCustomName;
 import hellfirepvp.modularmachinery.common.item.ItemBlockMachineComponent;
 import hellfirepvp.modularmachinery.common.item.ItemBlockMachineComponentCustomName;
-import hellfirepvp.modularmachinery.common.registry.RegistryEvent;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @SuppressWarnings({"MethodMayBeStatic", "UnusedReturnValue"})
 public class RegistryBlocks {
     public static final List<Block> BLOCK_MODEL_TO_REGISTER = new ArrayList<>();
-
-    @SubscribeEvent
-    public void registerBlocks(RegistryEvent.RegisterBlocks event) {
-        registerBlocks();
-        registerTileEntities();
-
-        // Register blocks with GameRegistry (also done inside registerBlock)
-        // Retained for blocks that were registered via BLOCK_MODEL_TO_REGISTER only
-        for (Block block : BLOCK_MODEL_TO_REGISTER) {
-            String name = block.getUnlocalizedName();
-            if (name != null && name.startsWith("tile.")) {
-                name = name.substring(5);
-            }
-            GameRegistry.registerBlock(block, name);
-        }
-    }
+    private static final Map<Block, Class<? extends ItemBlock>> CUSTOM_ITEM_BLOCKS = new HashMap<>();
 
     public static void registerBlocks() {
         // EStorage
-        prepareItemBlockRegister(new ItemEStorageController(registerBlock(BlockEStorageController.L4)));
-        prepareItemBlockRegister(new ItemEStorageController(registerBlock(BlockEStorageController.L6)));
-        prepareItemBlockRegister(new ItemEStorageController(registerBlock(BlockEStorageController.L9)));
-        prepareItemBlockRegister(registerBlock(BlockEStorageEnergyCell.L4));
-        prepareItemBlockRegister(registerBlock(BlockEStorageEnergyCell.L6));
-        prepareItemBlockRegister(registerBlock(BlockEStorageEnergyCell.L9));
-        prepareItemBlockRegister(registerBlock(BlockEStorageCellDrive.INSTANCE));
-        prepareItemBlockRegister(new ItemBlockME(registerBlock(BlockEStorageMEChannel.INSTANCE)));
-        prepareItemBlockRegister(registerBlock(BlockEStorageVent.INSTANCE));
-        prepareItemBlockRegister(registerBlock(BlockEStorageCasing.INSTANCE));
+        registerCustomItemBlock(BlockEStorageController.L4, ItemEStorageController.class);
+        registerCustomItemBlock(BlockEStorageController.L6, ItemEStorageController.class);
+        registerCustomItemBlock(BlockEStorageController.L9, ItemEStorageController.class);
+        registerBlock(BlockEStorageEnergyCell.L4);
+        registerBlock(BlockEStorageEnergyCell.L6);
+        registerBlock(BlockEStorageEnergyCell.L9);
+        registerBlock(BlockEStorageCellDrive.INSTANCE);
+        registerCustomItemBlock(BlockEStorageMEChannel.INSTANCE, ItemBlockME.class);
+        registerBlock(BlockEStorageVent.INSTANCE);
+        registerBlock(BlockEStorageCasing.INSTANCE);
 
         // EFabricator
-        prepareItemBlockRegister(new ItemEFabricatorController(registerBlock(BlockEFabricatorController.L4)));
-        prepareItemBlockRegister(new ItemEFabricatorController(registerBlock(BlockEFabricatorController.L6)));
-        prepareItemBlockRegister(new ItemEFabricatorController(registerBlock(BlockEFabricatorController.L9)));
-        prepareItemBlockRegister(new ItemEFabricatorParallelProc(registerBlock(BlockEFabricatorParallelProc.L4)));
-        prepareItemBlockRegister(new ItemEFabricatorParallelProc(registerBlock(BlockEFabricatorParallelProc.L6)));
-        prepareItemBlockRegister(new ItemEFabricatorParallelProc(registerBlock(BlockEFabricatorParallelProc.L9)));
-        prepareItemBlockRegister(new ItemEFabricatorMEChannel(registerBlock(BlockEFabricatorMEChannel.INSTANCE)));
-        prepareItemBlockRegister(new ItemEFabricatorPatternBus(registerBlock(BlockEFabricatorPatternBus.INSTANCE)));
-        prepareItemBlockRegister(new ItemEFabricatorWorker(registerBlock(BlockEFabricatorWorker.INSTANCE)));
-        prepareItemBlockRegister(registerBlock(BlockEFabricatorVent.INSTANCE));
-        prepareItemBlockRegister(registerBlock(BlockEFabricatorCasing.INSTANCE));
+        registerCustomItemBlock(BlockEFabricatorController.L4, ItemEFabricatorController.class);
+        registerCustomItemBlock(BlockEFabricatorController.L6, ItemEFabricatorController.class);
+        registerCustomItemBlock(BlockEFabricatorController.L9, ItemEFabricatorController.class);
+        registerCustomItemBlock(BlockEFabricatorParallelProc.L4, ItemEFabricatorParallelProc.class);
+        registerCustomItemBlock(BlockEFabricatorParallelProc.L6, ItemEFabricatorParallelProc.class);
+        registerCustomItemBlock(BlockEFabricatorParallelProc.L9, ItemEFabricatorParallelProc.class);
+        registerCustomItemBlock(BlockEFabricatorMEChannel.INSTANCE, ItemEFabricatorMEChannel.class);
+        registerCustomItemBlock(BlockEFabricatorPatternBus.INSTANCE, ItemEFabricatorPatternBus.class);
+        registerCustomItemBlock(BlockEFabricatorWorker.INSTANCE, ItemEFabricatorWorker.class);
+        registerBlock(BlockEFabricatorVent.INSTANCE);
+        registerBlock(BlockEFabricatorCasing.INSTANCE);
 
         // ECalculator
-        prepareItemBlockRegister(new ItemECalculatorController(registerBlock(BlockECalculatorController.L4)));
-        prepareItemBlockRegister(new ItemECalculatorController(registerBlock(BlockECalculatorController.L6)));
-        prepareItemBlockRegister(new ItemECalculatorController(registerBlock(BlockECalculatorController.L9)));
-        prepareItemBlockRegister(new ItemECalculatorParallelProc(registerBlock(BlockECalculatorParallelProc.L4)));
-        prepareItemBlockRegister(new ItemECalculatorParallelProc(registerBlock(BlockECalculatorParallelProc.L6)));
-        prepareItemBlockRegister(new ItemECalculatorParallelProc(registerBlock(BlockECalculatorParallelProc.L9)));
-        prepareItemBlockRegister(new ItemECalculatorThreadCore(registerBlock(BlockECalculatorThreadCore.L4)));
-        prepareItemBlockRegister(new ItemECalculatorThreadCore(registerBlock(BlockECalculatorThreadCore.L6)));
-        prepareItemBlockRegister(new ItemECalculatorThreadCore(registerBlock(BlockECalculatorThreadCore.L9)));
-        prepareItemBlockRegister(new ItemECalculatorThreadCore(registerBlock(BlockECalculatorThreadCoreHyper.L4)));
-        prepareItemBlockRegister(new ItemECalculatorThreadCore(registerBlock(BlockECalculatorThreadCoreHyper.L6)));
-        prepareItemBlockRegister(new ItemECalculatorThreadCore(registerBlock(BlockECalculatorThreadCoreHyper.L9)));
-        prepareItemBlockRegister(registerBlock(BlockECalculatorTail.L4));
-        prepareItemBlockRegister(registerBlock(BlockECalculatorTail.L6));
-        prepareItemBlockRegister(registerBlock(BlockECalculatorTail.L9));
-        prepareItemBlockRegister(new ItemECalculatorMEChannel(registerBlock(BlockECalculatorMEChannel.INSTANCE)));
-        prepareItemBlockRegister(new ItemECalculatorCellDrive(registerBlock(BlockECalculatorCellDrive.INSTANCE)));
-        prepareItemBlockRegister(registerBlock(BlockECalculatorTransmitterBus.INSTANCE));
-        prepareItemBlockRegister(registerBlock(BlockECalculatorCasing.INSTANCE));
+        registerCustomItemBlock(BlockECalculatorController.L4, ItemECalculatorController.class);
+        registerCustomItemBlock(BlockECalculatorController.L6, ItemECalculatorController.class);
+        registerCustomItemBlock(BlockECalculatorController.L9, ItemECalculatorController.class);
+        registerCustomItemBlock(BlockECalculatorParallelProc.L4, ItemECalculatorParallelProc.class);
+        registerCustomItemBlock(BlockECalculatorParallelProc.L6, ItemECalculatorParallelProc.class);
+        registerCustomItemBlock(BlockECalculatorParallelProc.L9, ItemECalculatorParallelProc.class);
+        registerCustomItemBlock(BlockECalculatorThreadCore.L4, ItemECalculatorThreadCore.class);
+        registerCustomItemBlock(BlockECalculatorThreadCore.L6, ItemECalculatorThreadCore.class);
+        registerCustomItemBlock(BlockECalculatorThreadCore.L9, ItemECalculatorThreadCore.class);
+        registerCustomItemBlock(BlockECalculatorThreadCoreHyper.L4, ItemECalculatorThreadCore.class);
+        registerCustomItemBlock(BlockECalculatorThreadCoreHyper.L6, ItemECalculatorThreadCore.class);
+        registerCustomItemBlock(BlockECalculatorThreadCoreHyper.L9, ItemECalculatorThreadCore.class);
+        registerBlock(BlockECalculatorTail.L4);
+        registerBlock(BlockECalculatorTail.L6);
+        registerBlock(BlockECalculatorTail.L9);
+        registerCustomItemBlock(BlockECalculatorMEChannel.INSTANCE, ItemECalculatorMEChannel.class);
+        registerCustomItemBlock(BlockECalculatorCellDrive.INSTANCE, ItemECalculatorCellDrive.class);
+        registerBlock(BlockECalculatorTransmitterBus.INSTANCE);
+        registerBlock(BlockECalculatorCasing.INSTANCE);
+
+        finalizeBlockRegistration();
     }
 
     public static void registerTileEntities() {
@@ -128,7 +110,7 @@ public class RegistryBlocks {
     }
 
     public static void registerBlockModels() {
-        BLOCK_MODEL_TO_REGISTER.forEach(RegistryBlocks::registerBlockModel);
+        // Block model registration - stubbed for 1.7.10 port
         BLOCK_MODEL_TO_REGISTER.clear();
     }
 
@@ -139,44 +121,33 @@ public class RegistryBlocks {
     public static <T extends Block> T registerBlock(T block) {
         BLOCK_MODEL_TO_REGISTER.add(block);
         GenericRegistryPrimer.INSTANCE.register(block);
-        // pendingIBlockColorBlocks not available in this MMCE version
-        // if (block instanceof BlockDynamicColor) {
-        //     hellfirepvp.modularmachinery.common.registry.RegistryBlocks.pendingIBlockColorBlocks.add((BlockDynamicColor) block);
-        // }
+        return block;
+    }
 
-        // Register with GameRegistry using unlocalized name (1.7.10 style)
+    private static <T extends Block> void registerCustomItemBlock(T block, Class<? extends ItemBlock> itemClass) {
+        CUSTOM_ITEM_BLOCKS.put(block, itemClass);
+        registerBlock(block);
+    }
+
+    private static void finalizeBlockRegistration() {
+        for (Block block : BLOCK_MODEL_TO_REGISTER) {
+            String name = extractRegistryName(block);
+            Class<? extends ItemBlock> itemClass = CUSTOM_ITEM_BLOCKS.getOrDefault(block, ItemBlock.class);
+            GameRegistry.registerBlock(block, itemClass, name);
+        }
+    }
+
+    private static String extractRegistryName(Block block) {
         String name = block.getUnlocalizedName();
         if (name != null && name.startsWith("tile.")) {
             name = name.substring(5);
         }
-        GameRegistry.registerBlock(block, name);
-
-        return block;
-    }
-
-    public static ItemBlock prepareItemBlockRegister(Block block) {
-        if (block instanceof BlockMachineComponent) {
-            if (block instanceof BlockCustomName) {
-                return prepareItemBlockRegister(new ItemBlockMachineComponentCustomName(block));
-            } else {
-                return prepareItemBlockRegister(new ItemBlockMachineComponent(block));
-            }
-        } else {
-            if (block instanceof BlockCustomName) {
-                return prepareItemBlockRegister(new ItemBlockCustomName(block));
-            } else {
-                return prepareItemBlockRegister(new ItemBlock(block));
-            }
+        // Strip modid prefix if present (e.g. "ecoaeextension.blockname" -> "blockname")
+        int dotIndex = name.indexOf('.');
+        if (dotIndex > 0) {
+            name = name.substring(dotIndex + 1);
         }
-    }
-
-    public static <T extends ItemBlock> T prepareItemBlockRegister(T item) {
-        Block block = ReflectionHelper.getPrivateValue(ItemBlock.class, item, "field_150939_a", "block");
-        String unlocalizedName = block.getUnlocalizedName();
-
-        item.setUnlocalizedName(unlocalizedName);
-        RegistryItems.ITEMS_TO_REGISTER.add(item);
-        return item;
+        return name;
     }
 
     public static void registerBlockModel(final Block block) {
