@@ -1,6 +1,7 @@
 package github.kasuminova.ecoaeextension;
 
 import github.kasuminova.ecoaeextension.common.CommonProxy;
+import github.kasuminova.ecoaeextension.common.command.CommandNovaEngReload;
 import github.kasuminova.ecoaeextension.common.network.*;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
@@ -63,5 +64,10 @@ public class ECOAEExtension {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit();
+    }
+
+    @EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandNovaEngReload());
     }
 }

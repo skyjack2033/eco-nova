@@ -47,6 +47,11 @@ public class MachineRegistry {
         }
     }
 
+    /** Clear all loaded machine definitions. */
+    public void clearMachinery() {
+        loadedMachines.clear();
+    }
+
     /**
      * Load all structure definitions from the default_machinery resource directory.
      * Called during preInit before any tile entities are created.

@@ -17,6 +17,10 @@ public class MachineCoolants {
 
     private final Map<Fluid, Coolant> coolants = new Reference2ObjectLinkedOpenHashMap<>();
 
+    public void clear() {
+        coolants.clear();
+    }
+
     public void init() {
         Fluid water = FluidRegistry.getFluid("water");
         Fluid steam = FluidRegistry.getFluid("steam");

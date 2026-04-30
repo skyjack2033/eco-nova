@@ -58,6 +58,8 @@ public class CommonProxy implements IGuiHandler {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(ECOAEExtension.instance, this);
 
+        registerNEIHandler();
+
         MinecraftForge.EVENT_BUS.register(EStorageEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(EFabricatorEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(ECalculatorEventHandler.INSTANCE);
@@ -140,6 +142,16 @@ public class CommonProxy implements IGuiHandler {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return null;
+    }
+
+    private static void registerNEIHandler() {
+        try {
+            Class.forName("codechicken.nei.api.API");
+            github.kasuminova.ecoaeextension.common.nei.NEIMultiBlockHandler.register();
+            ECOAEExtension.log.info("NEI multi-block handler registered");
+        } catch (ClassNotFoundException e) {
+            ECOAEExtension.log.info("NEI not present, skipping multi-block handler registration");
+        }
     }
 
     public enum GuiType {

@@ -10,6 +10,9 @@ dependencies {
     // AE2 UFOfficial for GTNH 1.7.10 (appeng.api.*)
     compileOnly("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-871-GTNH:dev")
 
+    // NEI for recipe handler API
+    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.7.91-GTNH:dev")
+
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
