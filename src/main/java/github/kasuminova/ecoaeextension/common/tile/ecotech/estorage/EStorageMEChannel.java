@@ -19,7 +19,7 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.me.helpers.MachineSource;
-import github.kasuminova.ecoaeextension.common.block.ecotech.efabricator.BlockEFabricatorMEChannel;
+import github.kasuminova.ecoaeextension.common.block.ecotech.estorage.BlockEStorageMEChannel;
 import hellfirepvp.modularmachinery.ModularMachinery;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -68,7 +68,7 @@ public class EStorageMEChannel extends EStoragePart implements ICellContainer, I
 
     public ItemStack getVisualItemStack() {
         EStorageController controller = getController();
-        return new ItemStack(Item.getItemFromBlock(controller == null ? BlockEFabricatorMEChannel.INSTANCE : controller.getParentController()), 1, 0);
+        return new ItemStack(Item.getItemFromBlock(controller == null ? BlockEStorageMEChannel.INSTANCE : controller.getParentController()), 1, 0);
     }
 
     @MENetworkEventSubscribe

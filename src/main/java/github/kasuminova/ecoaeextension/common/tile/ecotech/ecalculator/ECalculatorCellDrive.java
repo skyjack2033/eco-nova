@@ -60,11 +60,13 @@ public class ECalculatorCellDrive extends ECalculatorPart implements IAEAppEngIn
                 if (level == Levels.L4) {
                     return 0;
                 }
+                break;
             }
             case C: {
                 if (level == Levels.L4 || level == Levels.L6) {
                     return 0;
                 }
+                break;
             }
         }
 
@@ -84,11 +86,13 @@ public class ECalculatorCellDrive extends ECalculatorPart implements IAEAppEngIn
                 if (level == Levels.L4) {
                     return false;
                 }
+                break;
             }
             case C: {
                 if (level == Levels.L4 || level == Levels.L6) {
                     return false;
                 }
+                break;
             }
         }
 

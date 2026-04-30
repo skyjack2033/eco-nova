@@ -166,7 +166,7 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
         inventoryHandlers.clear();
         isCached = true;
         ItemStack stack = driveInv.getStackInSlot(0);
-        if (stack.stackSize <= 0) {
+        if (stack == null || stack.stackSize <= 0) {
             updateDriveBlockState();
             return;
         }
@@ -263,7 +263,8 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
     @SuppressWarnings("unchecked")
     public <T extends IAEStack<T>> IMEInventoryHandler<T> getHandler(final StorageChannel channel) {
         updateHandler(false);
-        if (driveInv.getStackInSlot(0).getItem() instanceof EStorageCell<?> cell && isCellSupported(cell.getLevel())) {
+        ItemStack stack = driveInv.getStackInSlot(0);
+        if (stack != null && stack.getItem() instanceof EStorageCell<?> cell && isCellSupported(cell.getLevel())) {
             IMEInventoryHandler handler = inventoryHandlers.get(channel);
             return handler == null ? null : (IMEInventoryHandler<T>) handler;
         }

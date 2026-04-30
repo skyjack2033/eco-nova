@@ -1,7 +1,7 @@
 package github.kasuminova.ecoaeextension.mixin.ae2;
 
 import appeng.api.storage.ICellHandler;
-import appeng.core.features.registries.cell.CellRegistry;
+import appeng.core.features.registries.CellRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

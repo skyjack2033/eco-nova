@@ -106,8 +106,8 @@ public class ECalculatorEventHandler {
 
         AppEngInternalInventory inv = drive.getDriveInv();
         ItemStack stackInSlot = inv.getStackInSlot(0);
-        if (stackInSlot.stackSize <= 0) {
-            if (stackInHand.stackSize <= 0 || !(stackInHand.getItem() instanceof ECalculatorCell)) {
+        if (stackInSlot == null || stackInSlot.stackSize <= 0) {
+            if (stackInHand == null || stackInHand.stackSize <= 0 || !(stackInHand.getItem() instanceof ECalculatorCell)) {
                 return;
             }
             player.inventory.setInventorySlotContents(player.inventory.currentItem, inv.insertItem(0, stackInHand.copy(), false));

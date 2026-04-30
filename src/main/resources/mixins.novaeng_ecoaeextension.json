@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "github.kasuminova.ecoaeextension.mixin.ae2",
-  "refmap": "mixins.novaeng_ecoaeextension.refmap.json",
+  "refmap": "mixins.ecoaeextension.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "client": [],

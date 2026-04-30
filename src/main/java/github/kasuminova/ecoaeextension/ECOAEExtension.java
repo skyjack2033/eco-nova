@@ -15,7 +15,8 @@ import cpw.mods.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Tags.MOD_ID, version = Tags.VERSION, acceptedMinecraftVersions = "[1.7.10]")
+@Mod(modid = Tags.MOD_ID, version = Tags.VERSION, acceptedMinecraftVersions = "[1.7.10]",
+     dependencies = "required-after:gregtech;required-after:structurelib;required-after:appliedenergistics2")
 @SuppressWarnings("MethodMayBeStatic")
 public class ECOAEExtension {
     public static final String MOD_ID = Tags.MOD_ID;

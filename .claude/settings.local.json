@@ -24,7 +24,9 @@
       "Bash(\"C:/Program Files/Microsoft/jdk-21.0.5.11-hotspot/bin/java\" -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=10808 -jar gradle/wrapper/gradle-wrapper.jar compileJava)",
       "Bash(curl -x socks5://127.0.0.1:10808 -L -s \"https://api.adoptium.net/v3/assets/latest/25/hotspot?vendor=eclipse\")",
       "Bash(curl -x socks5://127.0.0.1:10808 -L -s \"https://api.adoptium.net/v3/assets/latest/25/hotspot\")",
-      "Bash(python3 -c \"import sys,json; assets=json.load\\(sys.stdin\\); [print\\(a['binary']['package']['link']\\) for a in assets if 'windows' in a['binary']['os'] and 'x64' in a['binary']['architecture'] and 'jdk' in a['binary']['image_type']]\")"
+      "Bash(python3 -c \"import sys,json; assets=json.load\\(sys.stdin\\); [print\\(a['binary']['package']['link']\\) for a in assets if 'windows' in a['binary']['os'] and 'x64' in a['binary']['architecture'] and 'jdk' in a['binary']['image_type']]\")",
+      "Bash(./gradlew compileJava --no-daemon)",
+      "Read(//tmp/**)"
     ]
   }
 }

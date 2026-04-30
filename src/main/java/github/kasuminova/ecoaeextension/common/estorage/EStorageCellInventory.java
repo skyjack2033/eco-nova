@@ -231,9 +231,7 @@ public class EStorageCellInventory<T extends IAEStack<T>> extends CellInventory<
                 r.setStackSize(r.getStackSize() - remainingItemCount);
                 if (mode == Actionable.MODULATE) {
                     l.setStackSize(l.getStackSize() + remainingItemCount);
-                    // Update Count.
-                    // Accessor stubbed for AE2 rv3
-                    // stubbed
+                    this.storedCount += remainingItemCount;
                     this.saveChangesES();
                 }
                 return r;
@@ -241,12 +239,10 @@ public class EStorageCellInventory<T extends IAEStack<T>> extends CellInventory<
                 if (mode == Actionable.MODULATE) {
                     long prev = l.getStackSize();
                     l.setStackSize(l.getStackSize() + input.getStackSize());
-                    // Update Count.
-                    // Accessor stubbed for AE2 rv3
                     if (prev == 0) {
-                        // stubbed
+                        this.storedTypes++;
                     }
-                    // stubbed
+                    this.storedCount += input.getStackSize();
                     this.saveChangesES();
                 }
                 return null;
@@ -266,10 +262,8 @@ public class EStorageCellInventory<T extends IAEStack<T>> extends CellInventory<
 
                         this.cellStacks.add(toWrite);
 
-                        // Update Types and Counts.
-                        // Accessor stubbed for AE2 rv3
-                        // stubbed
-                        // stubbed
+                        this.storedTypes++;
+                        this.storedCount += remainingItemCount;
                         this.saveChangesES();
                     }
                     return toReturn;
@@ -278,10 +272,8 @@ public class EStorageCellInventory<T extends IAEStack<T>> extends CellInventory<
                 if (mode == Actionable.MODULATE) {
                     this.cellStacks.add(input);
 
-                    // Update Types and Counts.
-                    // Accessor stubbed for AE2 rv3
-                    // stubbed
-                    // stubbed
+                    this.storedTypes++;
+                    this.storedCount += input.getStackSize();
                     this.saveChangesES();
                 }
 
@@ -316,9 +308,7 @@ public class EStorageCellInventory<T extends IAEStack<T>> extends CellInventory<
                 results.setStackSize(size);
                 if (mode == Actionable.MODULATE) {
                     l.setStackSize(l.getStackSize() - size);
-                    // Update Count.
-                    // Accessor stubbed for AE2 rv3
-                    // stubbed
+                    this.storedCount -= size;
                     this.saveChangesES();
                 }
             }

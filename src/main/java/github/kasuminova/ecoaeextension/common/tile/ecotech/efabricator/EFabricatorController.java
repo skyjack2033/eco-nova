@@ -234,13 +234,15 @@ public class EFabricatorController extends EPartController<EFabricatorPart> {
             AENetworkProxy proxy = this.channel.getProxy();
             IEnergyGrid energy = proxy.getEnergy();
             IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
-            for (final Object obj : outputBuffer) {
-                IAEItemStack stack = (IAEItemStack) obj;
-                IAEItemStack notInserted = Platform.poweredInsert(energy, inv, stack.copy(), (appeng.api.networking.security.BaseActionSource) this.channel.getSource());
-                if (notInserted != null) {
-                    stack.setStackSize(notInserted.getStackSize());
-                } else {
-                    stack.setStackSize(0);
+            synchronized (outputBuffer) {
+                for (final Object obj : outputBuffer) {
+                    IAEItemStack stack = (IAEItemStack) obj;
+                    IAEItemStack notInserted = Platform.poweredInsert(energy, inv, stack.copy(), (appeng.api.networking.security.BaseActionSource) this.channel.getSource());
+                    if (notInserted != null) {
+                        stack.setStackSize(notInserted.getStackSize());
+                    } else {
+                        stack.setStackSize(0);
+                    }
                 }
             }
         } catch (Exception ignored) {

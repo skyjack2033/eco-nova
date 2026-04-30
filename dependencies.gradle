@@ -13,6 +13,16 @@ dependencies {
     // NEI for recipe handler API
     compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.7.91-GTNH:dev")
 
+    // GT5-Unofficial for GregTech MultiBlockBase (1.7.10)
+    // Exclude transitive deps — only the GT API is needed at compile time;
+    // GT's dependencies (ProjectRed, Forestry, etc.) are runtime-provided by GTNH pack
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.45.165:dev") {
+        transitive = false
+    }
+
+    // StructureLib for IStructureDefinition multi-block structure builder
+    compileOnly("com.github.GTNewHorizons:StructureLib:1.3.4:dev")
+
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")

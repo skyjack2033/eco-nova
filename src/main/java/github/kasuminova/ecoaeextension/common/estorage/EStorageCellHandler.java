@@ -4,9 +4,7 @@ import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEStack;
-import appeng.core.features.registries.cell.BasicCellHandler;
-import appeng.me.storage.BasicCellInventoryHandler;
+import appeng.core.features.registries.entries.BasicCellHandler;
 import github.kasuminova.ecoaeextension.common.item.estorage.EStorageCell;
 import net.minecraft.item.ItemStack;
 
@@ -31,7 +29,7 @@ public class EStorageCellHandler extends BasicCellHandler {
         if (inv == null || inv.getChannel() != channel) {
             return null;
         }
-        return new BasicCellInventoryHandler(inv, channel);
+        return new EStorageCellInventoryHandler(inv, channel);
     }
 
 }

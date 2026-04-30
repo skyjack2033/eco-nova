@@ -73,12 +73,15 @@ public class BlockECalculatorController extends BlockController {
         return state.getValue(FORMED) ? 12 : 4;
     }
 
-    
-    public boolean onBlockActivated(final World worldIn, @Nonnull final BlockPos pos, @Nonnull final IBlockState state, @Nonnull final EntityPlayer playerIn, @Nonnull final ForgeDirection facing, final float hitX, final float hitY, final float hitZ) {
+    @Override
+    public boolean onBlockActivated(final World worldIn, final int x, final int y, final int z,
+                                    final EntityPlayer playerIn, final int side,
+                                    final float hitX, final float hitY, final float hitZ) {
         if (!worldIn.isRemote) {
-            TileEntity te = worldIn.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+            TileEntity te = worldIn.getTileEntity(x, y, z);
             if (te instanceof ECalculatorController controller && controller.isStructureFormed()) {
-                playerIn.openGui(ECOAEExtension.MOD_ID, CommonProxy.GuiType.ECALCULATOR_CONTROLLER.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
+                playerIn.openGui(ECOAEExtension.MOD_ID, CommonProxy.GuiType.ECALCULATOR_CONTROLLER.ordinal(),
+                        worldIn, x, y, z);
             }
         }
         return true;
