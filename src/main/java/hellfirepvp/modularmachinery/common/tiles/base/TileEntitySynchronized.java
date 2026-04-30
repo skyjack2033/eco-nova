@@ -59,10 +59,11 @@ public class TileEntitySynchronized extends TileEntity {
     }
 
 
+    @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound compound = new NBTTagCompound();
         writeToNBT(compound);
-        return null; // Stub: no network packet implemented.
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, compound);
     }
 
     public void onLoad() {
@@ -71,20 +72,22 @@ public class TileEntitySynchronized extends TileEntity {
 
     public void updateContainingBlockInfo() {
         super.updateContainingBlockInfo();
-        final World world = getWorld();
-        // Stub: block state update (1.8+ API, not available in 1.7.10)
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() && worldObj != null) {
+        if (worldObj != null) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 
     @Nullable
     public S35PacketUpdateTileEntity getUpdatePacket() {
-        return null;
+        NBTTagCompound compound = new NBTTagCompound();
+        writeToNBT(compound);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, compound);
     }
 
     public NBTTagCompound getUpdateTag() {
-        return new NBTTagCompound();
+        NBTTagCompound compound = new NBTTagCompound();
+        writeToNBT(compound);
+        return compound;
     }
 
     public void markNoUpdateSync() {

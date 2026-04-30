@@ -121,7 +121,6 @@ public class RegistryBlocks {
 
     public static <T extends Block> T registerBlock(T block) {
         BLOCK_MODEL_TO_REGISTER.add(block);
-        GenericRegistryPrimer.INSTANCE.register(block);
         return block;
     }
 

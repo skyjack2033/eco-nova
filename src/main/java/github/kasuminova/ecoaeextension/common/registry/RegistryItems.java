@@ -42,8 +42,6 @@ public class RegistryItems {
     }
 
     public static <T extends Item> T registerItem(T item) {
-        GenericRegistryPrimer.INSTANCE.register(item);
-
         String name = item.getUnlocalizedName();
         if (name != null && name.startsWith("item.")) {
             name = name.substring(5);

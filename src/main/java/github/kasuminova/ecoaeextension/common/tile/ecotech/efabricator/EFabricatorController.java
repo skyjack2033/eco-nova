@@ -361,7 +361,8 @@ public class EFabricatorController extends EPartController<EFabricatorPart> {
         for (final EFabricatorPatternBus patternBus : getPatternBuses()) {
             AppEngInternalInventory patternInv = patternBus.getPatterns();
             for (int i = 0; i < patternInv.getSlots(); i++) {
-                if (patternInv.getStackInSlot(i).stackSize <= 0) {
+                ItemStack slotStack = patternInv.getStackInSlot(i);
+                if (slotStack == null || slotStack.stackSize <= 0) {
                     patternInv.setInventorySlotContents(i, ItemUtils.copyStackWithSize(patternStack, 1));
                     return true;
                 }

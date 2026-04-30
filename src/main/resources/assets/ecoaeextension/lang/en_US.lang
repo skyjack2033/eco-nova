@@ -105,6 +105,7 @@ novaeng.efabricator_pattern_bus.info.2=Compatible with §bCrafting Patterns§7 /
 novaeng.efabricator_pattern_bus.info.3=When writing §eCrafting Patterns§7 in a ME Pattern Terminal, use §bQuick Upload§7.
 novaeng.efabricator_pattern_bus.info.4=  Subsystem §cmust§7 be §aonline§7 in the network.
 novaeng.efabricator_pattern_bus.info.5=  Subsystem §cmust§7 have at least §b1§7 §ePattern Bus§7 with free slots.
+novaeng.efabricator_pattern_bus.upload_unavailable=§cPattern upload from ME Pattern Terminal is not available in this version. Use the Pattern Bus GUI instead.
 
 novaeng.efabricator_me_channel.info.0=§9ME Communication Interface§7 is the §bprotocol compatibility layer§7 between the subsystem and ME network.
 novaeng.efabricator_me_channel.info.1=  §9Communication Interface§7 provides pattern core access to the ME network.

@@ -1,18 +1,11 @@
 package github.kasuminova.ecoaeextension.common.network;
 
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IMachineSet;
-import appeng.api.networking.security.IActionHost;
-import appeng.container.implementations.ContainerPatternEncoder;
-import appeng.container.slot.SlotRestrictedInput;
-import github.kasuminova.ecoaeextension.common.tile.ecotech.efabricator.EFabricatorMEChannel;
-
+import github.kasuminova.ecoaeextension.ECOAEExtension;
 import hellfirepvp.modularmachinery.ModularMachinery;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -31,16 +24,8 @@ public class PktPatternTermUploadPattern implements IMessage, IMessageHandler<Pk
     public IMessage onMessage(final PktPatternTermUploadPattern message, final MessageContext ctx) {
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         ModularMachinery.EXECUTE_MANAGER.addSyncTask(() -> {
-            Container container = player.openContainer;
-            if (!(container instanceof ContainerPatternEncoder encoder)) {
-                return;
-            }
-
-            // AccessorContainerPatternEncoder not available in AE2 rv3
-            try {
-                return;
-            } catch (final Exception ignored) {
-            }
+            player.addChatMessage(new ChatComponentText(
+                StatCollector.translateToLocal("novaeng.efabricator_pattern_bus.upload_unavailable")));
         });
         return null;
     }

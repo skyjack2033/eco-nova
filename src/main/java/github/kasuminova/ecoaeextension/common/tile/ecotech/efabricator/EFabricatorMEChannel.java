@@ -113,7 +113,7 @@ public class EFabricatorMEChannel extends EFabricatorPart implements ICraftingPr
         }
 
         ItemStack output = pattern.getOutput(table, this.getWorld());
-        if (output.stackSize <= 0) {
+        if (output == null || output.stackSize <= 0) {
             return false;
         }
 
