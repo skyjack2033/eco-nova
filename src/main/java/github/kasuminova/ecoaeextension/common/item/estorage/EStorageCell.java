@@ -101,6 +101,11 @@ public abstract class EStorageCell<T extends IAEStack<T>> extends AEBaseItem imp
     }
 
     @Override
+    public IInventory getConfigInventory(final ItemStack is) {
+        return null;
+    }
+
+    @Override
     public IInventory getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
