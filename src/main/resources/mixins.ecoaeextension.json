@@ -5,13 +5,8 @@
   "refmap": "mixins.novaeng_ecoaeextension.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
-  "client": [
-    "MixinGuiCraftingStatus",
-    "MixinGuiPatternTerm"
-  ],
-  "server": [
-    "MixinPacketInventoryAction"
-  ],
+  "client": [],
+  "server": [],
   "mixins": [
     "AccessorCellRegistry",
     "MixinTileChestFilter",
